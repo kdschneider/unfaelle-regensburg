@@ -1,0 +1,34 @@
+--- 
+title: "Unfallstatistik Regensburg"
+author: "Konstantin Schneider"
+date: "`r lubridate::now()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: assets/packages.bib
+url: https://kdschneider.github.io/unfaelle-regensburg
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  Auswertung von Verkehrsunfällen mit Personenschaden in Regensburg.
+biblio-style: apalike
+csl: assets/chicago-fullnote-bibliography.csl
+---
+
+---
+nocite: '@*'
+---
+
+# Index {#index}
+## Aufgabe
+
+> Ein Datenprojekt Ihrer Wahl. Dies muss nicht in R realisiert sein, kann mit einem Werkzeug Ihrer Wahl entstehen.
+> Ziel: Text und überzeugende Darstellung der Ergebnisse.
+
+```{r include=FALSE}
+knitr::write_bib(
+  x = renv::dependencies() |> 
+    dplyr::as_tibble() |> 
+    dplyr::pull(Package) |> 
+    unique(),
+  file = here::here("assets/packages.bib")
+)
+```

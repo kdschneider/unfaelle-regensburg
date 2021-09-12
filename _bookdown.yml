@@ -1,0 +1,13 @@
+book_filename: "unfaelle-regensburg"
+new_session: no
+before_chapter_script: "R/_common.R"
+delete_merged_file: true
+language:
+  label:
+    fig: "Abbildung "
+    tab: "Tabelle "
+    ref: "Quellen "
+  ui:
+    chapter_name: NULL
+output_dir: "docs"
+rmd_subdir: "chapters"

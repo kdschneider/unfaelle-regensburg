@@ -1,0 +1,10 @@
+index
+aufgabe
+data
+geocode
+csvrda-speichern.
+shapefiles
+total-crashes
+unfälle-nach-monat
+unfälle-nach-uhrzeit
+unfälle-nach-ortsteil

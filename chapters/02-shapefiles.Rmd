@@ -1,0 +1,109 @@
+# Shapefiles {#shapefiles}
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+Die restlichen Shapefiles (Stadtgrenze, Stadtteile, Gewässer, Autobahnen) stammen vom [Amt für Stadtentwicklung Regensburg](http://www.statistik.regensburg.de/)
+
+```{r}
+sf.regensburg <- 
+  read_sf(here::here("data-raw/shapefiles/regensburg/gesamtstadt.shp")) |> 
+  st_transform("WGS84") |> 
+  rename(
+    "m2" = qm
+  ) |>
+  select(m2, geometry)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.regensburg) +
+  ggthemes::theme_map()
+```
+
+```{r}
+sf.districts <- 
+  read_sf(here::here("data-raw/shapefiles/districts/stadtbezirke.shp")) |> 
+  st_transform("WGS84") |> 
+  rename(
+    "district" = Name,
+    "ha" = Hektar
+  ) |> 
+  mutate(
+    m2 = ha * 10^4
+  ) |> 
+  select(district, m2, geometry)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, linetype = 2) +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  ggthemes::theme_map()
+```
+
+```{r}
+sf.highways <- 
+  read_sf(here::here("data-raw/shapefiles/highways/autobahn.shp")) |> 
+  st_transform("WGS84") |> 
+  rename(
+    "feeder" = ZUBRINGER
+  ) |> 
+  mutate(
+    feeder = case_when(
+      feeder == "j" ~ TRUE,
+      feeder == "n" ~ FALSE
+    )
+  )
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, linetype = 2) +
+  geom_sf(data = sf.highways, alpha = 0.6) +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  ggthemes::theme_map()
+```
+
+```{r}
+sf.rivers <- 
+  read_sf(here::here("data-raw/shapefiles/rivers/gewaesser.shp")) |> 
+  st_transform("WGS84") |> 
+  select(geometry)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, linetype = 2) +
+  geom_sf(data = sf.rivers, alpha = 0.6) +
+  geom_sf(data = sf.highways, alpha = 0.6) +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  ggthemes::theme_map()
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, aes(fill = district), alpha = 0.7) +
+  geom_sf(data = sf.rivers, alpha = 0.7, fill = "lightblue") +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  theme_void() +
+  theme(
+    legend.position = "right",
+    legend.title = element_blank()
+  )
+```
+
+
+```{r, echo = FALSE}
+save(
+  list = c(
+    "sf.regensburg",
+    "sf.districts",
+    "sf.highways",
+    "sf.rivers"
+  ),
+  file = here::here("data/shapefiles.rda")
+)
+```

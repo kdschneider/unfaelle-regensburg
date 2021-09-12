@@ -1,0 +1,204 @@
+# Unfalldaten {#data}
+
+Das [Statistische Bundeamt](www.statistikportal.de) stellt eine vielzahl an unterschiedlichen Datensätzen zur Verfügung. In diesem Dokument werden offizielle Unfalldaten mit Personenschaden für Regensburg ausgewertet. Diese können [hier](https://unfallatlas.statistikportal.de/_opendata2021.html) heruntergeladen werden. 
+
+```{r packages}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+filenames <-
+  list.files(
+    path = here::here("data-raw/accidents")
+  )
+```
+
+```{r}
+ReadGarbageData <- function(filename){
+
+  # read a file
+  data <- read_csv2(here::here("data-raw/accidents", filename))
+
+  # the files have different headers
+  # this key corrects that
+  col_key <-
+    c(
+      # ids
+      FID = "id1",
+      OBJECTID = "id2",
+      OBJECTID_1 = "id2",
+      UIDENTSTLA = "id3",
+      UIDENTSTLAE = "id3",
+      # lighting
+      ULICHTVERH = "light_condition",
+      LICHT = "light_condition",
+      # street condition
+      IstStrasse = "street_condition",
+      STRZUSTAND = "street_condition",
+      # other
+      IstSonstig = "other",
+      IstSonstige = "other",
+      # common
+      ULAND = "land",
+      UREGBEZ = "bezirk",
+      UKREIS = "kreis",
+      UGEMEINDE = "gemeinde",
+      UJAHR = "year",
+      UMONAT = "month",
+      USTUNDE = "hour",
+      UWOCHENTAG = "weekday",
+      UKATEGORIE = "severity",
+      UART = "kind_of_accident",
+      UTYP1 = "type_of_accident",
+      IstRad = "bicycle",
+      IstKrad = "bike",
+      IstPKW = "car",
+      IstFuss = "pedestrian",
+      IstGkfz = "truck",
+      LINREFX = "linref_x",
+      LINREFY = "linref_y",
+      XGCSWGS84 = "lng",
+      YGCSWGS84 = "lat"
+    )
+
+  # correct col names via the key
+  names(data) <- col_key[names(data)]
+
+  # correct col types
+  data <-
+    data |>
+    mutate(
+      bezirk = as.character(bezirk),
+      year = as.numeric(year),
+      month = as.numeric(month),
+      hour = as.numeric(hour)
+    )
+
+  return(data)
+}
+```
+
+```{r}
+data <-
+  filenames |>
+  map_dfr(
+    ReadGarbageData
+  ) |>
+  select(-starts_with("id"))
+```
+
+```{r filter-regensburg}
+data <-
+  data |>
+  filter(
+    land == "09" &
+    bezirk == "3" &
+    kreis == "62" &
+    gemeinde == "000"
+  ) |>
+  select(-kind_of_accident, -type_of_accident, -linref_x, -linref_y) |>
+  select(-land, -bezirk, -kreis, -gemeinde)
+
+# add id
+data <-
+  data |>
+  mutate(
+    id = row_number()
+  ) |>
+  select(id, everything())
+```
+
+```{r}
+data <-
+  data |>
+  mutate(
+    datetime = glue::glue("{month}-{year}-{hour}") |>
+      parse_datetime(format = "%m-%Y-%H")
+  ) |>
+  mutate(
+    weekday = wday(weekday, label = TRUE),
+    date = lubridate::date(datetime)
+  ) |>
+  mutate(
+    across(
+      .cols = c(severity, light_condition, street_condition),
+      .fns = as_factor
+    )
+  ) |>
+  mutate(
+    across(
+      .cols = bicycle:other,
+      .fns = as.logical
+    )
+  ) |>
+  mutate(
+    severity = fct_recode(
+      severity,
+      "Toedlich" = "1",
+      "Schwer" = "2",
+      "Leicht" = "3"
+    ),
+    light_condition = fct_recode(
+      light_condition,
+      "Tageslicht" = "0",
+      "Dämmerung" = "1",
+      "Dunkelheit" = "2"
+    ),
+    street_condition = fct_recode(
+      street_condition,
+      "Trocken" = "0",
+      "Nass/Feucht" = "1",
+      "Winterglatt" = "2"
+    )
+  )
+```
+
+## Geocode
+
+```{r}
+# pb <- 
+#   progress::progress_bar$new(
+#     format = "Lade Geodaten :current/:total [:bar] :percent (eta: :eta)",
+#     total = nrow(data)
+#   )
+# 
+# pb$tick(0)
+# 
+# data <- 
+#   map2_dfr(
+#     .x = data$lng,
+#     .y = data$lat,
+#     .f = function(x = .x, y = .y){
+#       
+#       geodata <- photon::reverse(x, y) |> 
+#         select(name:country)
+#       
+#       pb$tick()
+#       
+#       return(geodata)
+#     }
+#   ) |>
+#   mutate(
+#     id = row_number(),
+#     street = ifelse(is.na(street), name, street)
+#   ) |>
+#   right_join(data, by = c("id"))
+# 
+# remove(pb)
+```
+
+## CSV/RDA speichern.
+
+```{r}
+# data
+write_csv2(
+  x = data,
+  file = here::here("output/regensburg_data.csv")
+)
+
+save(
+  list = c("data"),
+  file = here::here("data/regensburg_data.rda")
+)
+```
