@@ -17,18 +17,21 @@ csl: assets/chicago-fullnote-bibliography.csl
 nocite: '@*'
 ---
 
-# Index {#index}
-## Aufgabe
+# Index {#index -}
 
-> Ein Datenprojekt Ihrer Wahl. Dies muss nicht in R realisiert sein, kann mit einem Werkzeug Ihrer Wahl entstehen.
+## Aufgabe {-}
+
+> Ein Datenprojekt Ihrer Wahl. Dies muss nicht in R realisiert sein, kann mit einem Werkzeug Ihrer Wahl entstehen.  
 > Ziel: Text und überzeugende Darstellung der Ergebnisse.
 
 ```{r include=FALSE}
 knitr::write_bib(
-  x = renv::dependencies() |> 
-    dplyr::as_tibble() |> 
-    dplyr::pull(Package) |> 
-    unique(),
+  x = c(
+    "tidyverse", 
+    "lubridate",
+    "sf",
+    "leaflet"
+  ),
   file = here::here("assets/packages.bib")
 )
 ```

@@ -79,7 +79,7 @@ ReadGarbageData <- function(filename){
 }
 ```
 
-```{r}
+```{r cache = TRUE}
 data <-
   filenames |>
   map_dfr(
@@ -118,7 +118,7 @@ data <-
   ) |>
   mutate(
     weekday = wday(weekday, label = TRUE),
-    date = lubridate::date(datetime)
+    date = date(datetime)
   ) |>
   mutate(
     across(

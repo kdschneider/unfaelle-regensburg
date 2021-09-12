@@ -18,7 +18,14 @@
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="bs4_style.css">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.0.4.1/leaflet.js"></script><script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script><script src="libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script><link href="libs/leaflet-awesomemarkers-2.0.3/leaflet.awesome-markers.css" rel="stylesheet">
+<script src="libs/leaflet-awesomemarkers-2.0.3/leaflet.awesome-markers.min.js"></script><link href="libs/ionicons-2.0.1/ionicons.min.css" rel="stylesheet">
+<link href="libs/leaflet-markercluster-1.0.5/MarkerCluster.css" rel="stylesheet">
+<link href="libs/leaflet-markercluster-1.0.5/MarkerCluster.Default.css" rel="stylesheet">
+<script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.js"></script><script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.freezable.js"></script><script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.layersupport.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="bs4_style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -40,9 +47,10 @@
 
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
         <ul class="book-toc list-unstyled">
-<li><a class="" href="index.html"><span class="header-section-number">1</span> Index</a></li>
-<li><a class="" href="data.html"><span class="header-section-number">2</span> Unfalldaten</a></li>
-<li><a class="" href="shapefiles.html"><span class="header-section-number">3</span> Shapefiles</a></li>
+<li><a class="" href="index.html">Index</a></li>
+<li><a class="" href="data.html"><span class="header-section-number">1</span> Unfalldaten</a></li>
+<li><a class="" href="shapefiles.html"><span class="header-section-number">2</span> Shapefiles</a></li>
+<li><a class="" href="leaflet-map.html"><span class="header-section-number">3</span> Leaflet Karte</a></li>
 <li><a class="active" href="total-crashes.html"><span class="header-section-number">4</span> Anzahl der Unfälle</a></li>
 <li><a class="" href="pakete.html">Pakete</a></li>
 </ul>
@@ -56,11 +64,11 @@
 <h1>
 <span class="header-section-number">4</span> Anzahl der Unfälle<a class="anchor" aria-label="anchor" href="#total-crashes"><i class="fas fa-link"></i></a>
 </h1>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> |&gt; 
   <span class="fu">mutate</span><span class="op">(</span>
     month_year <span class="op">=</span> <span class="fu">parse_date</span><span class="op">(</span>
@@ -85,12 +93,12 @@
     fill <span class="op">=</span> <span class="st">""</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu">theme</span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-24-1.png" width="95%" style="display: block; margin: auto;"></div>
+<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-38-1.png" width="95%" style="display: block; margin: auto;"></div>
 <div id="unfälle-nach-monat" class="section level2" number="4.1">
 <h2>
 <span class="header-section-number">4.1</span> Unfälle nach Monat<a class="anchor" aria-label="anchor" href="#unf%C3%A4lle-nach-monat"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data.barplot</span> <span class="op">&lt;-</span> 
   <span class="va">data</span> |&gt; 
   <span class="fu">mutate</span><span class="op">(</span>
@@ -113,7 +121,7 @@
     light_condition <span class="op">=</span> <span class="fu">fct_infreq</span><span class="op">(</span><span class="va">light_condition</span><span class="op">)</span> |&gt; <span class="fu">fct_rev</span><span class="op">(</span><span class="op">)</span>,
     street_condition <span class="op">=</span> <span class="fu">fct_infreq</span><span class="op">(</span><span class="va">street_condition</span><span class="op">)</span> |&gt; <span class="fu">fct_rev</span><span class="op">(</span><span class="op">)</span>
     <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plot.bar.month_1</span> <span class="op">&lt;-</span> 
   <span class="va">data.barplot</span> |&gt; 
   <span class="fu">count</span><span class="op">(</span><span class="va">month</span>, <span class="va">severity</span><span class="op">)</span> |&gt; 
@@ -163,13 +171,13 @@
   <span class="op">)</span>
 
 <span class="va">plot.bar.month_1</span> <span class="op">/</span> <span class="op">(</span><span class="va">plot.bar.month_2</span> <span class="op">|</span> <span class="va">plot.bar.month_3</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html">plot_annotation</a></span><span class="op">(</span>tag_levels <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-26-1.png" width="95%" style="display: block; margin: auto;"></div>
+<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-40-1.png" width="95%" style="display: block; margin: auto;"></div>
 </div>
 <div id="unfälle-nach-uhrzeit" class="section level2" number="4.2">
 <h2>
 <span class="header-section-number">4.2</span> Unfälle nach Uhrzeit<a class="anchor" aria-label="anchor" href="#unf%C3%A4lle-nach-uhrzeit"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plot.bar.time_1</span> <span class="op">&lt;-</span> 
   <span class="va">data.barplot</span> |&gt; 
   <span class="fu">count</span><span class="op">(</span><span class="va">hour</span>, <span class="va">severity</span><span class="op">)</span> |&gt; 
@@ -219,13 +227,13 @@
   <span class="op">)</span>
 
 <span class="va">plot.bar.time_1</span> <span class="op">/</span> <span class="op">(</span><span class="va">plot.bar.time_2</span> <span class="op">|</span> <span class="va">plot.bar.time_3</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html">plot_annotation</a></span><span class="op">(</span>tag_levels <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-27-1.png" width="95%" style="display: block; margin: auto;"></div>
+<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-41-1.png" width="95%" style="display: block; margin: auto;"></div>
 </div>
 <div id="unfälle-nach-ortsteil" class="section level2" number="4.3">
 <h2>
 <span class="header-section-number">4.3</span> Unfälle nach Ortsteil<a class="anchor" aria-label="anchor" href="#unf%C3%A4lle-nach-ortsteil"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sf.data</span> <span class="op">&lt;-</span>
   <span class="va">data</span> |&gt; 
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lng"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"WGS84"</span><span class="op">)</span> |&gt; 
@@ -238,7 +246,7 @@
     left <span class="op">=</span> <span class="cn">TRUE</span>
   <span class="op">)</span> |&gt; 
   <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">m2</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data.district_plot</span> <span class="op">&lt;-</span>
   <span class="va">sf.data</span> |&gt; 
   <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span> |&gt; 
@@ -253,7 +261,7 @@
       <span class="fu">fct_infreq</span><span class="op">(</span><span class="op">)</span> |&gt; 
       <span class="fu">fct_rev</span><span class="op">(</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plot.district_bar</span> <span class="op">&lt;-</span> 
   <span class="va">data.district_plot</span> |&gt; 
   <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">district</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -287,12 +295,12 @@
     title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"Unfälle nach Ortsteil"</span><span class="op">)</span>, 
     subtitle <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"{min(data$year)} - {max(data$year)}"</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-30-1.png" width="95%" style="display: block; margin: auto;"></div>
+<div class="inline-figure"><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-44-1.png" width="95%" style="display: block; margin: auto;"></div>
 
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="shapefiles.html"><span class="header-section-number">3</span> Shapefiles</a></div>
+<div class="prev"><a href="leaflet-map.html"><span class="header-section-number">3</span> Leaflet Karte</a></div>
 <div class="next"><a href="pakete.html">Pakete</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
@@ -317,7 +325,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Unfallstatistik Regensburg</strong>" was written by Konstantin Schneider. It was last built on 2021-09-12 02:33:58.</p>
+    <p>"<strong>Unfallstatistik Regensburg</strong>" was written by Konstantin Schneider. It was last built on 2021-09-12 17:11:57.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

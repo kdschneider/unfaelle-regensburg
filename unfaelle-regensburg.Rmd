@@ -1,0 +1,895 @@
+--- 
+title: "Unfallstatistik Regensburg"
+author: "Konstantin Schneider"
+date: "`r lubridate::now()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: assets/packages.bib
+url: https://kdschneider.github.io/unfaelle-regensburg
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  Auswertung von Verkehrsunfällen mit Personenschaden in Regensburg.
+biblio-style: apalike
+csl: assets/chicago-fullnote-bibliography.csl
+---
+```{r include=FALSE, cache=FALSE}
+# R options set globally
+options(width = 60)
+
+# chunk options set globally
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  # figure options
+  fig.align = "center",
+  fig.retina = 3,
+  out.width = "95%"
+)
+```
+
+---
+nocite: '@*'
+---
+
+# Index {#index -}
+
+```{r echo = FALSE}
+downloadthis::download_file(
+  here::here("unfaelle-regensburg.html"),
+  output_name = NULL,
+  button_label = "Download",
+  button_type = "default",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = FALSE
+)
+```
+
+## Aufgabe {-}
+
+> Ein Datenprojekt Ihrer Wahl. Dies muss nicht in R realisiert sein, kann mit einem Werkzeug Ihrer Wahl entstehen.  
+> Ziel: Text und überzeugende Darstellung der Ergebnisse.
+
+```{r include=FALSE}
+knitr::write_bib(
+  x = c(
+    "tidyverse", 
+    "lubridate",
+    "sf",
+    "leaflet"
+  ),
+  file = here::here("assets/packages.bib")
+)
+```
+
+<!--chapter:end:index.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+# R options set globally
+options(width = 60)
+
+# chunk options set globally
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  # figure options
+  fig.align = "center",
+  fig.retina = 3,
+  out.width = "95%"
+)
+```
+# Unfalldaten {#data}
+
+Das [Statistische Bundeamt](www.statistikportal.de) stellt eine vielzahl an unterschiedlichen Datensätzen zur Verfügung. In diesem Dokument werden offizielle Unfalldaten mit Personenschaden für Regensburg ausgewertet. Diese können [hier](https://unfallatlas.statistikportal.de/_opendata2021.html) heruntergeladen werden. 
+
+```{r packages}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+filenames <-
+  list.files(
+    path = here::here("data-raw/accidents")
+  )
+```
+
+```{r}
+ReadGarbageData <- function(filename){
+
+  # read a file
+  data <- read_csv2(here::here("data-raw/accidents", filename))
+
+  # the files have different headers
+  # this key corrects that
+  col_key <-
+    c(
+      # ids
+      FID = "id1",
+      OBJECTID = "id2",
+      OBJECTID_1 = "id2",
+      UIDENTSTLA = "id3",
+      UIDENTSTLAE = "id3",
+      # lighting
+      ULICHTVERH = "light_condition",
+      LICHT = "light_condition",
+      # street condition
+      IstStrasse = "street_condition",
+      STRZUSTAND = "street_condition",
+      # other
+      IstSonstig = "other",
+      IstSonstige = "other",
+      # common
+      ULAND = "land",
+      UREGBEZ = "bezirk",
+      UKREIS = "kreis",
+      UGEMEINDE = "gemeinde",
+      UJAHR = "year",
+      UMONAT = "month",
+      USTUNDE = "hour",
+      UWOCHENTAG = "weekday",
+      UKATEGORIE = "severity",
+      UART = "kind_of_accident",
+      UTYP1 = "type_of_accident",
+      IstRad = "bicycle",
+      IstKrad = "bike",
+      IstPKW = "car",
+      IstFuss = "pedestrian",
+      IstGkfz = "truck",
+      LINREFX = "linref_x",
+      LINREFY = "linref_y",
+      XGCSWGS84 = "lng",
+      YGCSWGS84 = "lat"
+    )
+
+  # correct col names via the key
+  names(data) <- col_key[names(data)]
+
+  # correct col types
+  data <-
+    data |>
+    mutate(
+      bezirk = as.character(bezirk),
+      year = as.numeric(year),
+      month = as.numeric(month),
+      hour = as.numeric(hour)
+    )
+
+  return(data)
+}
+```
+
+```{r cache = TRUE}
+data <-
+  filenames |>
+  map_dfr(
+    ReadGarbageData
+  ) |>
+  select(-starts_with("id"))
+```
+
+```{r filter-regensburg}
+data <-
+  data |>
+  filter(
+    land == "09" &
+    bezirk == "3" &
+    kreis == "62" &
+    gemeinde == "000"
+  ) |>
+  select(-kind_of_accident, -type_of_accident, -linref_x, -linref_y) |>
+  select(-land, -bezirk, -kreis, -gemeinde)
+
+# add id
+data <-
+  data |>
+  mutate(
+    id = row_number()
+  ) |>
+  select(id, everything())
+```
+
+```{r}
+data <-
+  data |>
+  mutate(
+    datetime = glue::glue("{month}-{year}-{hour}") |>
+      parse_datetime(format = "%m-%Y-%H")
+  ) |>
+  mutate(
+    weekday = wday(weekday, label = TRUE),
+    date = date(datetime)
+  ) |>
+  mutate(
+    across(
+      .cols = c(severity, light_condition, street_condition),
+      .fns = as_factor
+    )
+  ) |>
+  mutate(
+    across(
+      .cols = bicycle:other,
+      .fns = as.logical
+    )
+  ) |>
+  mutate(
+    severity = fct_recode(
+      severity,
+      "Toedlich" = "1",
+      "Schwer" = "2",
+      "Leicht" = "3"
+    ),
+    light_condition = fct_recode(
+      light_condition,
+      "Tageslicht" = "0",
+      "Dämmerung" = "1",
+      "Dunkelheit" = "2"
+    ),
+    street_condition = fct_recode(
+      street_condition,
+      "Trocken" = "0",
+      "Nass/Feucht" = "1",
+      "Winterglatt" = "2"
+    )
+  )
+```
+
+## Geocode
+
+```{r}
+# pb <- 
+#   progress::progress_bar$new(
+#     format = "Lade Geodaten :current/:total [:bar] :percent (eta: :eta)",
+#     total = nrow(data)
+#   )
+# 
+# pb$tick(0)
+# 
+# data <- 
+#   map2_dfr(
+#     .x = data$lng,
+#     .y = data$lat,
+#     .f = function(x = .x, y = .y){
+#       
+#       geodata <- photon::reverse(x, y) |> 
+#         select(name:country)
+#       
+#       pb$tick()
+#       
+#       return(geodata)
+#     }
+#   ) |>
+#   mutate(
+#     id = row_number(),
+#     street = ifelse(is.na(street), name, street)
+#   ) |>
+#   right_join(data, by = c("id"))
+# 
+# remove(pb)
+```
+
+## CSV/RDA speichern.
+
+```{r}
+# data
+write_csv2(
+  x = data,
+  file = here::here("output/regensburg_data.csv")
+)
+
+save(
+  list = c("data"),
+  file = here::here("data/regensburg_data.rda")
+)
+```
+
+<!--chapter:end:chapters/01-data.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+# R options set globally
+options(width = 60)
+
+# chunk options set globally
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  # figure options
+  fig.align = "center",
+  fig.retina = 3,
+  out.width = "95%"
+)
+```
+# Shapefiles {#shapefiles}
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+Die restlichen Shapefiles (Stadtgrenze, Stadtteile, Gewässer, Autobahnen) stammen vom [Amt für Stadtentwicklung Regensburg](http://www.statistik.regensburg.de/)
+
+```{r}
+sf.regensburg <- 
+  read_sf(here::here("data-raw/shapefiles/regensburg/gesamtstadt.shp")) |> 
+  st_transform("WGS84") |> 
+  rename(
+    "m2" = qm
+  ) |>
+  select(m2, geometry)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.regensburg) +
+  ggthemes::theme_map()
+```
+
+```{r}
+sf.districts <- 
+  read_sf(here::here("data-raw/shapefiles/districts/stadtbezirke.shp")) |> 
+  st_transform("WGS84") |> 
+  rename(
+    "district" = Name,
+    "ha" = Hektar
+  ) |> 
+  mutate(
+    m2 = ha * 10^4
+  ) |> 
+  select(district, m2, geometry)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, linetype = 2) +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  ggthemes::theme_map()
+```
+
+```{r}
+sf.highways <- 
+  read_sf(here::here("data-raw/shapefiles/highways/autobahn.shp")) |> 
+  st_transform("WGS84") |> 
+  rename(
+    "feeder" = ZUBRINGER
+  ) |> 
+  mutate(
+    feeder = case_when(
+      feeder == "j" ~ TRUE,
+      feeder == "n" ~ FALSE
+    )
+  )
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, linetype = 2) +
+  geom_sf(data = sf.highways, alpha = 0.6) +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  ggthemes::theme_map()
+```
+
+```{r}
+sf.rivers <- 
+  read_sf(here::here("data-raw/shapefiles/rivers/gewaesser.shp")) |> 
+  st_transform("WGS84") |> 
+  select(geometry)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, linetype = 2) +
+  geom_sf(data = sf.rivers, alpha = 0.6) +
+  geom_sf(data = sf.highways, alpha = 0.6) +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  ggthemes::theme_map()
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = sf.districts, aes(fill = district), alpha = 0.7) +
+  geom_sf(data = sf.rivers, alpha = 0.7, fill = "lightblue") +
+  geom_sf(data = sf.regensburg, lwd = 1, alpha = 0) +
+  theme_void() +
+  theme(
+    legend.position = "right",
+    legend.title = element_blank()
+  )
+```
+
+
+```{r, echo = FALSE}
+save(
+  list = c(
+    "sf.regensburg",
+    "sf.districts",
+    "sf.highways",
+    "sf.rivers"
+  ),
+  file = here::here("data/shapefiles.rda")
+)
+```
+
+<!--chapter:end:chapters/02-shapefiles.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+# R options set globally
+options(width = 60)
+
+# chunk options set globally
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  # figure options
+  fig.align = "center",
+  fig.retina = 3,
+  out.width = "95%"
+)
+```
+# Leaflet Karte {#leaflet-map}
+
+```{r}
+library(tidyverse)
+library(leaflet)
+library(sf)
+```
+
+```{r}
+load(
+  here::here("data/regensburg_data.rda")
+)
+
+load(
+  here::here("data/shapefiles.rda")
+)
+```
+
+```{r}
+sf.data <-
+  data |> 
+  st_as_sf(coords = c("lng", "lat"), crs = "WGS84")
+```
+
+```{r}
+bounds <- sf.regensburg |> st_bbox()
+
+map <- 
+  leaflet(
+    options = leafletOptions(
+      crs = leafletCRS(code = "WGS84"),
+      preferCanvas = NULL
+    )
+  ) |> 
+  addProviderTiles(
+    provider = providers$OpenStreetMap.DE,
+    group = "OSM",
+    options = providerTileOptions(minZoom = 11)
+  ) |> 
+  setView(
+    lng = (as.numeric(bounds[1]) + as.numeric(bounds[3]))/2,
+    lat = (as.numeric(bounds[2]) + as.numeric(bounds[4]))/2,
+    zoom = 12
+  ) |> 
+  setMaxBounds(
+    lng1 = as.numeric(bounds[1] - 0.015), 
+    lat1 = as.numeric(bounds[2] - 0.015), 
+    lng2 = as.numeric(bounds[3] + 0.015), 
+    lat2 = as.numeric(bounds[4] + 0.015)
+  )
+```
+
+
+```{r echo = FALSE}
+map
+```
+
+```{r}
+map <- 
+  map |> 
+  addAwesomeMarkers(
+    data = data |> filter(severity == "Toedlich"),
+    group = "Tödliche Unfälle",
+    lng = ~lng,
+    lat = ~lat,
+    icon = awesomeIcons(
+      icon = 'ios-close',
+      iconColor = 'black',
+      library = 'ion',
+      markerColor = "red"
+    )
+  ) |> 
+  addAwesomeMarkers(
+    data = data |> filter(severity == "Schwer"),
+    group = "Schwere Unfälle",
+    lng = ~lng,
+    lat = ~lat,
+    icon = awesomeIcons(
+      icon = 'ios-close',
+      iconColor = 'black',
+      library = 'ion',
+      markerColor = "orange"
+    ),
+    clusterOptions = markerClusterOptions()
+  ) |> 
+  addAwesomeMarkers(
+    data = data |> filter(severity == "Leicht"),
+    group = "Leichte Unfälle",
+    lng = ~lng,
+    lat = ~lat,
+    icon = awesomeIcons(
+      icon = 'ios-close',
+      iconColor = 'black',
+      library = 'ion',
+      markerColor = "beige"
+    ),
+    clusterOptions = markerClusterOptions()
+  )
+```
+
+```{r echo = FALSE}
+map
+```
+
+```{r}
+districts <-
+  data |> 
+  st_as_sf(coords = c("lng", "lat"), crs = "WGS84") |> 
+  rename(
+    points = geometry
+  ) |> 
+  st_join(
+    y = sf.districts |> rename("district_shape" = geometry),
+    join = st_within,
+    left = TRUE
+  ) |> 
+  select(-m2) |> 
+  as_tibble() |> 
+  left_join(
+    y = sf.districts |> rename("district_polygon" = geometry) ,
+    by = "district"
+  ) |>
+  drop_na(district) |>
+  mutate(
+    district = as_factor(district) |>
+      fct_infreq() |>
+      fct_rev()
+  ) |> 
+  add_count(district) |> 
+  select(district, district_polygon, n) |> 
+  unique() |> 
+  st_as_sf()
+```
+
+```{r}
+map <-
+  map |> 
+  addPolygons(
+    data = districts,
+    group = "Stadtteile",
+    opacity = 1,
+    weight = 0.5, 
+    fillOpacity = 0.5,
+    color = "black",
+    fillColor = ~colorNumeric("viridis", n)(n),
+    highlightOptions = highlightOptions(
+      color = "white", 
+      weight = 2,
+      bringToFront = TRUE
+    )
+  )
+```
+
+```{r echo = FALSE}
+map
+```
+
+```{r}
+map <- 
+  map |> 
+    addProviderTiles(
+      provider = providers$Stamen.TonerBackground,
+      group = "Stadtteile",
+      options = providerTileOptions(minZoom = 11)
+    ) |> 
+    addLayersControl(
+      baseGroups = c("OSM", "Stadtteile"),
+      overlayGroups = c("Tödliche Unfälle", "Schwere Unfälle", "Leichte Unfälle"),
+      options = layersControlOptions(collapsed = FALSE)
+    )
+```
+
+```{r echo = FALSE}
+map
+```
+
+
+<!--chapter:end:chapters/03-leaflet_map.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+# R options set globally
+options(width = 60)
+
+# chunk options set globally
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  # figure options
+  fig.align = "center",
+  fig.retina = 3,
+  out.width = "95%"
+)
+```
+# Anzahl der Unfälle {#total-crashes}
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(sf)
+```
+
+```{r}
+data |> 
+  mutate(
+    month_year = parse_date(
+      x = glue::glue("{month}/{year}"),
+      format = "%m/%Y"
+    )
+  ) |> 
+  group_by(month_year, severity) %>%
+  tally() %>%
+  ggplot(aes(x = month_year, y = n)) +
+  geom_col(
+    aes(fill = severity)
+  ) +
+  scale_x_date(
+    date_breaks = "6 months",
+    date_labels = "%m/%Y"
+  ) +
+  labs(
+    x = "Datum",
+    y = "Anzahl an Unfällen",
+    title = "Histogramm",
+    fill = ""
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.1))
+```
+
+## Unfälle nach Monat
+
+```{r}
+data.barplot <- 
+  data |> 
+  mutate(
+    month = as_factor(month) |> 
+      fct_recode(
+        "Januar" = "1",
+        "Februar" = "2",
+        "März" = "3",
+        "April" = "4",
+        "Mai" = "5",
+        "Juni" = "6",
+        "Juli" = "7",
+        "August" = "8",
+        "September" = "9",
+        "Oktober" = "10",
+        "November" = "11",
+        "Dezember" = "12"
+      ),
+    severity = fct_infreq(severity) |> fct_rev(),
+    light_condition = fct_infreq(light_condition) |> fct_rev(),
+    street_condition = fct_infreq(street_condition) |> fct_rev()
+    )
+```
+
+```{r, fig.height = 6}
+plot.bar.month_1 <- 
+  data.barplot |> 
+  count(month, severity) |> 
+  ggplot(aes(x = month, y = n)) +
+  geom_col(
+    aes(fill = severity)
+  ) +
+  labs(
+    x = "Datum",
+    y = "Anzahl an Unfällen",
+    fill = ""
+  ) +
+  theme(
+    legend.position = "top"
+  )
+
+plot.bar.month_2 <- 
+  data.barplot |> 
+  count(month, light_condition) |> 
+  ggplot(aes(x = month, y = n)) +
+  geom_col(
+    aes(fill = light_condition)
+  ) +
+  labs(
+    x = "Datum",
+    y = "Anzahl an Unfällen",
+    fill = ""
+  ) +
+  theme(
+    legend.position = "bottom"
+  )
+
+plot.bar.month_3 <- 
+  data.barplot |> 
+  count(month, street_condition) |> 
+  ggplot(aes(x = month, y = n)) +
+  geom_col(
+    aes(fill = street_condition)
+  ) +
+  labs(
+    x = "Datum",
+    y = "Anzahl an Unfällen",
+    fill = ""
+  ) +
+  theme(
+    legend.position = "bottom"
+  )
+
+plot.bar.month_1 / (plot.bar.month_2 | plot.bar.month_3) + plot_annotation(tag_levels = "A")
+```
+
+## Unfälle nach Uhrzeit
+
+```{r, fig.height = 6}
+plot.bar.time_1 <- 
+  data.barplot |> 
+  count(hour, severity) |> 
+  ggplot(aes(x = hour, y = n)) +
+  geom_col(
+    aes(fill = severity)
+  ) +
+  labs(
+    x = "Datum",
+    y = "Anzahl an Unfällen",
+    fill = ""
+  ) +
+  theme(
+    legend.position = "top"
+  )
+
+plot.bar.time_2 <- 
+  data.barplot |> 
+  count(hour, light_condition) |> 
+  ggplot(aes(x = hour, y = n)) +
+  geom_col(
+    aes(fill = light_condition)
+  ) +
+  labs(
+    x = "Datum",
+    y = "Anzahl an Unfällen",
+    fill = ""
+  ) +
+  theme(
+    legend.position = "bottom"
+  )
+
+plot.bar.time_3 <- 
+  data.barplot |> 
+  count(hour, street_condition) |> 
+  ggplot(aes(x = hour, y = n)) +
+  geom_col(
+    aes(fill = street_condition)
+  ) +
+  labs(
+    x = "Datum",
+    y = "Anzahl an Unfällen",
+    fill = ""
+  ) +
+  theme(
+    legend.position = "bottom"
+  )
+
+plot.bar.time_1 / (plot.bar.time_2 | plot.bar.time_3) + plot_annotation(tag_levels = "A")
+```
+
+## Unfälle nach Ortsteil
+
+```{r}
+sf.data <-
+  data |> 
+  st_as_sf(coords = c("lng", "lat"), crs = "WGS84") |> 
+  rename(
+    points = geometry
+  ) |> 
+  st_join(
+    y = sf.districts |> rename("district_shape" = geometry),
+    join = st_within,
+    left = TRUE
+  ) |> 
+  select(-m2)
+```
+
+```{r}
+data.district_plot <-
+  sf.data |> 
+  as_tibble() |> 
+  left_join(
+    y = sf.districts |> rename("district_polygon" = geometry) ,
+    by = "district"
+  ) |>
+  drop_na(district) |>
+  add_count(district) |> 
+  mutate(
+    district = as_factor(district) |> 
+      fct_infreq() |> 
+      fct_rev()
+  )
+```
+
+```{r, fig.height=6}
+plot.district_bar <- 
+  data.district_plot |> 
+  ggplot(aes(x = district)) +
+  geom_bar(
+    aes(fill = n)
+  ) +
+  coord_flip() +
+  theme(
+    axis.title = element_blank()
+  )
+
+plot.district_map <-
+  data.district_plot |>
+  ggplot() +
+  geom_sf(aes(geometry = district_polygon, fill = n), lwd = 0) + 
+  geom_sf(data = sf.districts, alpha = 0) +
+  geom_sf(data = sf.regensburg, alpha = 0, lwd = 0.9, linetype = 1) +
+  ggthemes::theme_map()
+
+
+(plot.district_bar | plot.district_map) & 
+  viridis::scale_fill_viridis(
+    option = "D",
+    direction = 1,
+    tran = "log"
+  ) &
+  theme(
+    legend.position = "none"
+  ) &
+  plot_annotation(
+    title = glue::glue("Unfälle nach Ortsteil"), 
+    subtitle = glue::glue("{min(data$year)} - {max(data$year)}")
+  )
+```
+
+<!--chapter:end:chapters/04-total.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+# R options set globally
+options(width = 60)
+
+# chunk options set globally
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  # figure options
+  fig.align = "center",
+  fig.retina = 3,
+  out.width = "95%"
+)
+```
+`r if (knitr::is_html_output()) '
+# Pakete {-}
+
+<div id="refs"></div>
+
+'`
+
+<!--chapter:end:chapters/99-references.Rmd-->
+
