@@ -1,0 +1,14 @@
+data
+geocode
+csvrda-speichern.
+shapefiles
+leaflet-map
+basemap
+marker
+stadtteile-als-shapefile
+bedienelemente
+finale-karte
+total-crashes
+unfälle-nach-monat
+unfälle-nach-uhrzeit
+unfälle-nach-ortsteil

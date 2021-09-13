@@ -65,15 +65,15 @@
 <span class="header-section-number">1</span> Unfalldaten<a class="anchor" aria-label="anchor" href="#data"><i class="fas fa-link"></i></a>
 </h1>
 <p>Das <a href="www.statistikportal.de">Statistische Bundeamt</a> stellt eine vielzahl an unterschiedlichen Datensätzen zur Verfügung. In diesem Dokument werden offizielle Unfalldaten mit Personenschaden für Regensburg ausgewertet. Diese können <a href="https://unfallatlas.statistikportal.de/_opendata2021.html">hier</a> heruntergeladen werden.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">filenames</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>
     path <span class="op">=</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="st">"data-raw/accidents"</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ReadGarbageData</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">filename</span><span class="op">)</span><span class="op">{</span>
 
   <span class="co"># read a file</span>
@@ -136,14 +136,14 @@
 
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span>
   <span class="va">filenames</span> |&gt;
   <span class="fu">map_dfr</span><span class="op">(</span>
     <span class="va">ReadGarbageData</span>
   <span class="op">)</span> |&gt;
   <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"id"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span>
   <span class="va">data</span> |&gt;
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span>
@@ -162,7 +162,7 @@
     id <span class="op">=</span> <span class="fu">row_number</span><span class="op">(</span><span class="op">)</span>
   <span class="op">)</span> |&gt;
   <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="fu">everything</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span>
   <span class="va">data</span> |&gt;
   <span class="fu">mutate</span><span class="op">(</span>
@@ -209,7 +209,7 @@
 <h2>
 <span class="header-section-number">1.1</span> Geocode<a class="anchor" aria-label="anchor" href="#geocode"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># pb &lt;- </span>
 <span class="co">#   progress::progress_bar$new(</span>
 <span class="co">#     format = "Lade Geodaten :current/:total [:bar] :percent (eta: :eta)",</span>
@@ -244,7 +244,7 @@
 <h2>
 <span class="header-section-number">1.2</span> CSV/RDA speichern.<a class="anchor" aria-label="anchor" href="#csvrda-speichern."><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># data</span>
 <span class="fu">write_csv2</span><span class="op">(</span>
   x <span class="op">=</span> <span class="va">data</span>,
@@ -283,7 +283,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Unfallstatistik Regensburg</strong>" was written by Konstantin Schneider. It was last built on 2021-09-12 17:11:57.</p>
+    <p>"<strong>Unfallstatistik Regensburg</strong>" was written by Konstantin Schneider. It was last built on 2021-09-13 11:01:48.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

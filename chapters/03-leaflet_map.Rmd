@@ -22,6 +22,8 @@ sf.data <-
   st_as_sf(coords = c("lng", "lat"), crs = "WGS84")
 ```
 
+## Basemap
+
 ```{r}
 bounds <- sf.regensburg |> st_bbox()
 
@@ -50,9 +52,18 @@ map <-
   )
 ```
 
+## Marker
 
-```{r echo = FALSE}
-map
+```{r}
+custom_popup <- function(data, header) {
+  text <- 
+    glue::glue(
+      "<b>{header}</b> ",
+      "<br>",
+      "{data$month}/{data$year} ({data$hour} Uhr)"
+    )
+  return(text)
+}
 ```
 
 ```{r}
@@ -68,7 +79,8 @@ map <-
       iconColor = 'black',
       library = 'ion',
       markerColor = "red"
-    )
+    ),
+    popup = custom_popup(data = data, header = "Tödlicher Unfall")
   ) |> 
   addAwesomeMarkers(
     data = data |> filter(severity == "Schwer"),
@@ -81,7 +93,8 @@ map <-
       library = 'ion',
       markerColor = "orange"
     ),
-    clusterOptions = markerClusterOptions()
+    clusterOptions = markerClusterOptions(),
+    popup = custom_popup(data = data, header = "Schwerer Unfall")
   ) |> 
   addAwesomeMarkers(
     data = data |> filter(severity == "Leicht"),
@@ -94,12 +107,20 @@ map <-
       library = 'ion',
       markerColor = "beige"
     ),
-    clusterOptions = markerClusterOptions()
+    clusterOptions = markerClusterOptions(),
+    popup = custom_popup(data = data, header = "Leichter Unfall")
   )
 ```
 
-```{r echo = FALSE}
-map
+## Stadtteile als Shapefile
+
+```{r}
+custom_label <- function(data) {
+  text <- glue::glue(
+    "{data$district}: {data$n} Unfälle"
+  )
+  return(text)
+}
 ```
 
 ```{r}
@@ -147,13 +168,12 @@ map <-
       color = "white", 
       weight = 2,
       bringToFront = TRUE
-    )
+    ),
+    label = ~custom_label(data = districts)
   )
 ```
 
-```{r echo = FALSE}
-map
-```
+## Bedienelemente
 
 ```{r}
 map <- 
@@ -170,7 +190,9 @@ map <-
     )
 ```
 
-```{r echo = FALSE}
+## Finale Karte
+
+```{r}
 map
 ```
 
