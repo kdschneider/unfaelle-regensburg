@@ -44,9 +44,11 @@ file.rename(
 )
 
 # create .nojekyll for github pages
-file.create(
-  here::here("docs/.nojekyll")
-)
+if (!file.exists(here::here("docs/.nojekyll"))) {
+  file.create(
+    here::here("docs/.nojekyll")
+  )
+}
 
 # tidy up caches
 if (dir.exists(here::here("_bookdown_files"))) {
