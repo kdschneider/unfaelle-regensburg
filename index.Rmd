@@ -1,11 +1,13 @@
 --- 
 title: "Unfallstatistik Regensburg"
 author: "Konstantin Schneider"
-date: "`r lubridate::now()`"
+date: "`r lubridate::today()`"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: assets/packages.bib
 url: https://kdschneider.github.io/unfaelle-regensburg
+github-repo: kdschneider/unfaelle-regensburg
+favicon: assets/favicon.ico
 # cover-image: path to the social sharing image like images/cover.jpg
 description: |
   Auswertung von Verkehrsunfällen mit Personenschaden in Regensburg.
@@ -18,8 +20,6 @@ nocite: '@*'
 ---
 
 # Index {#index -}
-
-Eine einseitige HTML-Version finden Sie [hier](./unfaelle-regensburg.html).
 
 ## Aufgabe {-}
 

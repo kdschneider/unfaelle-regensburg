@@ -1,8 +1,44 @@
-bookdown::bs4_book:
-  css: "bs4_style.css"
-  theme:
-    primary: "#006E76"
-  repo: "https://github.com/kdschneider/unfaelle-regensburg"
+bookdown::gitbook:
+  css:
+    - assets/css/style.css
+    - assets/css/gitbook-style.css
+  split_by: ['chapter+number']
+  split_bib: yes
+  number_sections: yes
+  global_numbering: yes
+  highlight: kate
+  self_contained: no
+  config:
+    toolbar:
+      position: fixed
+    search:
+      engine: lunr
+      options: null
+    sharing:
+      facebook: no
+      github: yes
+      twitter: no
+      linkedin: no
+      weibo: no
+      instapaper: no
+      vk: no
+      whatsapp: no
+      all: 'github'
+    fontsettings: no
+    info: no
+    toc:
+      collapse: subsection
+      scroll_highlight: yes
+      before: |
+        <li><a href="./">Unfälle Regensburg</a></li>
+      after: |
+        <li>
+          <a href="https://kdschneider.github.io/" target="blank">
+            Konstantin Schneider
+          </a>
+        </li>
+    download: ["html"]
+
 rmdformats::html_clean:
   highlight: "tango"
   thumbnails: no
