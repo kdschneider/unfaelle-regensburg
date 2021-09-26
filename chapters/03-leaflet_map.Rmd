@@ -85,7 +85,10 @@ map <-
       markerColor = "red"
     ),
     clusterOptions = markerClusterOptions(),
-    popup = custom_popup(data = data, header = "Tödlicher Unfall")
+    popup = custom_popup(
+      data = data |> filter(severity == "Toedlich"), 
+      header = "Tödlicher Unfall"
+    )
   ) |> 
   addAwesomeMarkers(
     data = data |> filter(severity == "Schwer"),
@@ -99,7 +102,10 @@ map <-
       markerColor = "orange"
     ),
     clusterOptions = markerClusterOptions(),
-    popup = custom_popup(data = data, header = "Schwerer Unfall")
+    popup = custom_popup(
+      data = data |> filter(severity == "Schwer"), 
+      header = "Schwerer Unfall"
+    )
   ) |> 
   addAwesomeMarkers(
     data = data |> filter(severity == "Leicht"),
@@ -113,7 +119,10 @@ map <-
       markerColor = "beige"
     ),
     clusterOptions = markerClusterOptions(),
-    popup = custom_popup(data = data, header = "Leichter Unfall")
+    popup = custom_popup(
+      data = data |> filter(severity == "Leicht"), 
+      header = "Leichter Unfall"
+    )
   )
 ```
 
