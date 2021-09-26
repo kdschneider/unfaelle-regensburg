@@ -88,7 +88,7 @@ data <-
   select(-starts_with("id"))
 ```
 
-```{r filter-regensburg}
+```{r filter-regensburg, cache = TRUE}
 data <-
   data |>
   filter(
@@ -109,7 +109,7 @@ data <-
   select(id, everything())
 ```
 
-```{r}
+```{r cache = TRUE}
 data <-
   data |>
   mutate(
@@ -152,6 +152,11 @@ data <-
       "Winterglatt" = "2"
     )
   )
+```
+
+```{r}
+data |> 
+  DT::datatable()
 ```
 
 ## Geocode

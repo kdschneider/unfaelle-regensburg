@@ -52,6 +52,10 @@ map <-
   )
 ```
 
+```{r echo = FALSE}
+map
+```
+
 ## Marker
 
 ```{r}
@@ -80,6 +84,7 @@ map <-
       library = 'ion',
       markerColor = "red"
     ),
+    clusterOptions = markerClusterOptions(),
     popup = custom_popup(data = data, header = "Tödlicher Unfall")
   ) |> 
   addAwesomeMarkers(
@@ -110,6 +115,10 @@ map <-
     clusterOptions = markerClusterOptions(),
     popup = custom_popup(data = data, header = "Leichter Unfall")
   )
+```
+
+```{r echo = FALSE}
+map
 ```
 
 ## Stadtteile als Shapefile
@@ -171,6 +180,10 @@ map <-
     ),
     label = ~custom_label(data = districts)
   )
+```
+
+```{r echo = FALSE}
+map
 ```
 
 ## Bedienelemente

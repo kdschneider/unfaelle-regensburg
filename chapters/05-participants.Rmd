@@ -1,0 +1,28 @@
+# Unfallteilnehmer
+
+```{r}
+load(
+  here::here("data/regensburg_data.rda")
+)
+```
+
+**Fragen:**
+
+- Tödliche/Schwere Unfälle mit Fußgängern? Motorrad?
+- Mehr Fußgängerunfälle in der Innenstadt?
+
+```{r}
+data.vehicle <- 
+  data |> 
+  pivot_longer(
+    cols = bicycle:truck,
+    names_to = "type_of_vehicle",
+    values_to = "took_part"
+  ) |> 
+  drop_na() |> 
+  count(type_of_vehicle, took_part, severity)
+
+data.vehicle |> knitr::kable()
+```
+
+

@@ -19,6 +19,8 @@ nocite: '@*'
 
 # Index {#index -}
 
+Eine einseitige HTML-Version finden Sie [hier](./unfaelle-regensburg.html).
+
 ## Aufgabe {-}
 
 > Ein Datenprojekt Ihrer Wahl. Dies muss nicht in R realisiert sein, kann mit einem Werkzeug Ihrer Wahl entstehen.  

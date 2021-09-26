@@ -1,37 +1,122 @@
-# Anzahl der Unfälle {#total-crashes}
+# Auswertung {#total-crashes}
+
+> Zur besseren Lesbarkeit wird der R Code in diesem Kapitel nicht gezeigt. Dieser besteht größtenteils aus Plots und ist bis auf wenige Ausnahmen nicht weiter relevant. 
+
+```{r echo = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE
+)
+```
 
 ```{r}
 library(tidyverse)
 library(patchwork)
 library(sf)
+library(viridis)
 ```
 
 ```{r}
+load(
+  here::here("data/regensburg_data.rda")
+)
+
+load(
+  here::here("data/shapefiles.rda")
+)
+```
+
+Im Stadtgebiet Regensburg geschahen von den Jahren `r min(data$year)` bis `r max(data$year)` insgesamt `r nrow(data)` Unfälle mit Personenschaden. Abbildung \@ref(fig:unfaelle-timeseries) zeigt die monatlichen Unfälle in diesem Zeitraum.
+
+```{r unfaelle-timeseries, fig.cap = "Monatliche Unfälle in Regensburg."}
 data |> 
-  mutate(
-    month_year = parse_date(
-      x = glue::glue("{month}/{year}"),
-      format = "%m/%Y"
-    )
-  ) |> 
-  group_by(month_year, severity) %>%
-  tally() %>%
-  ggplot(aes(x = month_year, y = n)) +
-  geom_col(
-    aes(fill = severity)
-  ) +
+  count(date) |> 
+  ggplot(aes(x = date, y = n)) +
+  geom_line() +
   scale_x_date(
     date_breaks = "6 months",
-    date_labels = "%m/%Y"
+    date_labels = "%m/%Y",
+    limits = c(min(data$date), max(data$date))
   ) +
   labs(
+    title = "Monatliche Verkehrsunfälle mit Personenschaden",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
     x = "Datum",
-    y = "Anzahl an Unfällen",
-    title = "Histogramm",
-    fill = ""
-  ) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.1))
+    y = "Anzahl an Unfällen"
+  )
 ```
+
+Während sich kein eindeutiger Auf- oder Abwärtstrend feststellen lässt, zeigen die Daten dennoch eine Jährliche Periodizität: Im Sommer finden die meisten Unfälle mit Personenschaden statt, während die Anzahl der Unfälle von Herbst bis Frühjahr sinkt.
+
+```{r}
+RelativeChange <- function(start_year, end_year) {
+  
+  a <- nrow(filter(data, year == end_year)) 
+  b <- nrow(filter(data, year == start_year))
+ 
+  res <- (1 - a/b) * 100
+  
+  return(res)
+}
+```
+
+Abbildung \@ref(fig:unfaelle-jaehrlich) zeigt die Anzahl der jährlichen Unfälle in Regensburg. Im Jahr 2020 zeigt sich ein Rückgang von `r round(RelativeChange(2019, 2020), digits = 0)`%. Dieser kann auf geringeren Verkehr aufgrund der Corona Pandemie zurückgeführt werden. Dies wird durch Abbildung \@ref(fig:unfaelle-jaehrlich-typ) verdeutlicht: Alle dokumentierten Verkehrsmittel hatten einen Rückgang der jährlichen Unfälle von 2019 bis 2020.
+
+```{r unfaelle-jaehrlich, cache = TRUE, fig.cap = "Jährliche Unfälle mit Personenschaden."}
+data |> 
+  count(year, severity) |> 
+  ggplot() +
+  geom_col(
+    aes(x = year, y = n, fill = severity)
+  ) +
+  labs(
+    title = "Jährliche Unfälle mit Personenschaden",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
+    x = "Jahr",
+    y = "Anzahl an Unfällen",
+    fill = "Schwere"
+  ) +
+  scale_fill_custom
+```
+
+Abbildung \@ref(fig:unfaelle-jaehrlich-typ) zeigt zudem, dass sich die Anzahl der Unfälle aller Verkehrsmittel außer Fahrrad auf einem fallenden Trend befinden. Die Anzahl der Unfälle mit Fahrradbeteiligung dagegen stieg bis 2020 kontinuierlich an.
+
+```{r unfaelle-jaehrlich-typ, cache = TRUE, fig.cap = "Jährliche Unfälle mit Personenschaden nach Verkehrsteilnehmer unterteilt."}
+data |> 
+  pivot_longer(
+    cols = bicycle:bike,
+    names_to = "type_of_vehicle",
+    values_to = "took_part"
+  ) |> 
+  mutate(
+    type_of_vehicle = as_factor(type_of_vehicle) |> 
+      fct_recode(
+        "Fahrrad" = "bicycle",
+        "Auto" = "car",
+        "Fußgänger" = "pedestrian",
+        "Motorrad" = "bike"
+      )
+  ) |> 
+  filter(
+    took_part == TRUE
+  ) |> 
+  count(year, severity, type_of_vehicle) |> 
+  
+  ggplot() +
+  geom_col(aes(x = year, y = n, fill = severity)) +
+  labs(
+    title = "Jährliche Unfälle nach Teilnehmer",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
+    x = "Jahr",
+    y = "Anzahl an Unfällen",
+    fill = "Schwere"
+  ) +
+  scale_fill_custom +
+  facet_wrap(
+    facets = vars(type_of_vehicle),
+    scales = "free_y"
+  )
+```
+
 
 ## Unfälle nach Monat
 
@@ -41,22 +126,25 @@ data.barplot <-
   mutate(
     month = as_factor(month) |> 
       fct_recode(
-        "Januar" = "1",
-        "Februar" = "2",
-        "März" = "3",
-        "April" = "4",
+        "Jan" = "1",
+        "Feb" = "2",
+        "Mär" = "3",
+        "Apr" = "4",
         "Mai" = "5",
-        "Juni" = "6",
-        "Juli" = "7",
-        "August" = "8",
-        "September" = "9",
-        "Oktober" = "10",
-        "November" = "11",
-        "Dezember" = "12"
+        "Jun" = "6",
+        "Jul" = "7",
+        "Aug" = "8",
+        "Sep" = "9",
+        "Okt" = "10",
+        "Nov" = "11",
+        "Dez" = "12"
       ),
-    severity = fct_infreq(severity) |> fct_rev(),
-    light_condition = fct_infreq(light_condition) |> fct_rev(),
-    street_condition = fct_infreq(street_condition) |> fct_rev()
+    severity = fct_infreq(severity) |> 
+      fct_rev(),
+    light_condition = fct_infreq(light_condition) |> 
+      fct_rev(),
+    street_condition = fct_infreq(street_condition) |> 
+      fct_rev()
     )
 ```
 
@@ -65,16 +153,16 @@ plot.bar.month_1 <-
   data.barplot |> 
   count(month, severity) |> 
   ggplot(aes(x = month, y = n)) +
-  geom_col(
-    aes(fill = severity)
-  ) +
+  geom_col(aes(fill = severity)) +
   labs(
-    x = "Datum",
+    x = "Monat",
     y = "Anzahl an Unfällen",
-    fill = ""
+    fill = "Schwere"
   ) +
   theme(
-    legend.position = "top"
+    plot.background = element_rect(
+      colour = "white"
+    )
   )
 
 plot.bar.month_2 <- 
@@ -85,12 +173,14 @@ plot.bar.month_2 <-
     aes(fill = light_condition)
   ) +
   labs(
-    x = "Datum",
+    x = "Monat",
     y = "Anzahl an Unfällen",
-    fill = ""
+    fill = "Lichtverhältnisse"
   ) +
   theme(
-    legend.position = "bottom"
+    plot.background = element_rect(
+      colour = "white"
+    )
   )
 
 plot.bar.month_3 <- 
@@ -103,13 +193,32 @@ plot.bar.month_3 <-
   labs(
     x = "Datum",
     y = "Anzahl an Unfällen",
-    fill = ""
+    fill = "Straßenverhältnisse"
   ) +
   theme(
-    legend.position = "bottom"
+    plot.background = element_rect(
+      colour = "white"
+    )
   )
+```
 
-plot.bar.month_1 / (plot.bar.month_2 | plot.bar.month_3) + plot_annotation(tag_levels = "A")
+```{r, fig.height = 6}
+plot.bar.month_1 / 
+  plot.bar.month_2 / 
+  plot.bar.month_3 + 
+  plot_annotation(
+    title = "Monatliche Unfälle mit Personenschaden",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
+    tag_levels = "A",
+    tag_suffix = "  "
+  ) &
+  scale_fill_custom &
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      vjust = 0.6
+    )
+  )
 ```
 
 ## Unfälle nach Uhrzeit
@@ -125,10 +234,12 @@ plot.bar.time_1 <-
   labs(
     x = "Datum",
     y = "Anzahl an Unfällen",
-    fill = ""
+    fill = "Schwere"
   ) +
   theme(
-    legend.position = "top"
+    plot.background = element_rect(
+      colour = "white"
+    )
   )
 
 plot.bar.time_2 <- 
@@ -141,10 +252,12 @@ plot.bar.time_2 <-
   labs(
     x = "Datum",
     y = "Anzahl an Unfällen",
-    fill = ""
+    fill = "Lichtverhältnisse"
   ) +
   theme(
-    legend.position = "bottom"
+    plot.background = element_rect(
+      colour = "white"
+    )
   )
 
 plot.bar.time_3 <- 
@@ -157,16 +270,35 @@ plot.bar.time_3 <-
   labs(
     x = "Datum",
     y = "Anzahl an Unfällen",
-    fill = ""
+    fill = "Straßenverhältnisse"
   ) +
   theme(
-    legend.position = "bottom"
+    plot.background = element_rect(
+      colour = "white"
+    )
   )
+```
 
-plot.bar.time_1 / (plot.bar.time_2 | plot.bar.time_3) + plot_annotation(tag_levels = "A")
+```{r, fig.height = 6}
+plot.bar.time_1 / 
+  plot.bar.time_2 / 
+  plot.bar.time_3 +
+  plot_annotation(
+    title = "Unfälle mit Personenschaden nach Tagesezeit",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
+    tag_levels = "A",
+    tag_suffix = "  "
+  ) &
+  scale_fill_viridis(
+    discrete = TRUE,
+    direction = -1,
+    option = "D"
+  )
 ```
 
 ## Unfälle nach Ortsteil
+
+### Absolute Anzahl
 
 ```{r}
 sf.data <-
@@ -197,41 +329,120 @@ data.district_plot <-
     district = as_factor(district) |> 
       fct_infreq() |> 
       fct_rev()
-  )
+  ) |> 
+  select(district, district_polygon, n, m2) |> 
+  unique()
 ```
 
-```{r, fig.height=6}
-plot.district_bar <- 
+```{r}
+plot.district_total_bar <- 
   data.district_plot |> 
-  ggplot(aes(x = district)) +
+  ggplot(aes(x = district, y = n)) +
   geom_bar(
-    aes(fill = n)
+    aes(fill = n),
+    stat = "identity"
   ) +
-  coord_flip() +
+  labs(
+    y = "Anzahl an Unfällen (N)",
+    fill = "N"
+  ) +
   theme(
-    axis.title = element_blank()
-  )
+    axis.title.y = element_blank(),
+    plot.background = element_rect(
+      size = 0
+    )
+  ) +
+  coord_flip()
+```
 
-plot.district_map <-
+```{r}
+plot.district_total_map <-
   data.district_plot |>
   ggplot() +
   geom_sf(aes(geometry = district_polygon, fill = n), lwd = 0) + 
   geom_sf(data = sf.districts, alpha = 0) +
   geom_sf(data = sf.regensburg, alpha = 0, lwd = 0.9, linetype = 1) +
-  ggthemes::theme_map()
-
-
-(plot.district_bar | plot.district_map) & 
-  viridis::scale_fill_viridis(
-    option = "D",
-    direction = 1,
-    tran = "log"
-  ) &
+  ggthemes::theme_map() +
   theme(
     legend.position = "none"
-  ) &
-  plot_annotation(
-    title = glue::glue("Unfälle nach Ortsteil"), 
-    subtitle = glue::glue("{min(data$year)} - {max(data$year)}")
   )
 ```
+
+```{r}
+plot.district_total_bar + 
+  inset_element(
+    plot.district_total_map, 
+    left = 0.35, 
+    bottom = 0, 
+    right = 1, 
+    top = 0.65
+  ) +
+  plot_annotation(
+    title = "Unfälle nach Ortsteil",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})")
+  ) & 
+  scale_fill_viridis(option = "D")
+```
+
+### Pro Quadratkilometer
+
+```{r}
+data.district_m2_plot <- 
+  data.district_plot |> 
+  unique() |> 
+  mutate(
+    n_per_m2 = n/m2 * 10^6,
+    district = reorder(district, n_per_m2)
+  )
+```
+
+```{r}
+plot.district_m2_bar <- 
+  data.district_m2_plot |> 
+  ggplot(aes(x = district, y = n_per_m2)) +
+  geom_bar(
+    aes(fill = n_per_m2),
+    stat = "identity"
+  ) +
+  labs(
+    y = "Unfälle pro Quadratkilometer (N/qkm)",
+    fill = "N/qkm"
+  ) +
+  theme(
+    axis.title.y = element_blank(),
+    plot.background = element_rect(
+      size = 0
+    )
+  ) +
+  coord_flip()
+```
+
+```{r}
+plot.district_m2_map <-
+  data.district_m2_plot |>
+  ggplot() +
+  geom_sf(aes(geometry = district_polygon, fill = n_per_m2), lwd = 0) + 
+  geom_sf(data = sf.districts, alpha = 0) +
+  geom_sf(data = sf.regensburg, alpha = 0, lwd = 0.9, linetype = 1) +
+  ggthemes::theme_map() +
+  theme(
+    legend.position = "none"
+  )
+```
+
+```{r}
+plot.district_m2_bar +
+  inset_element(
+    plot.district_m2_map,
+    left = 0.35,
+    right = 1,
+    bottom = 0,
+    top = 0.65
+  ) +
+  plot_annotation(
+    title = "Unfälle pro Quadratkilometer nach Ortsteil",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})")
+  ) & 
+  scale_fill_viridis(option = "D")
+```
+
