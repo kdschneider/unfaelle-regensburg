@@ -22,4 +22,6 @@ unfälle-nach-uhrzeit
 unfälle-nach-ortsteil
 absolute-anzahl
 pro-quadratkilometer
-unfallteilnehmer
+abgabe
+aufgabe-a
+aufgabe-b

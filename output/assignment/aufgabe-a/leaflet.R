@@ -1,37 +1,22 @@
-# Leaflet Karte {#leaflet-map}
-
-```{r}
+## --------------------------------------------------------------------------------------------------
 library(tidyverse)
 library(leaflet)
 library(sf)
-```
 
-```{r echo = FALSE, purl = FALSE}
-# change to:
-# load("data.rda")
 
-load(
-  here::here("data/regensburg_data.rda")
-)
 
-load(
-  here::here("data/shapefiles.rda")
-)
-```
 
-```{r include = FALSE}
+## ----include = FALSE-------------------------------------------------------------------------------
 load("data.rda")
-```
 
-```{r}
+
+## --------------------------------------------------------------------------------------------------
 sf.data <-
   data |> 
   st_as_sf(coords = c("lng", "lat"), crs = "WGS84")
-```
 
-## Basemap
 
-```{r}
+## --------------------------------------------------------------------------------------------------
 bounds <- sf.regensburg |> st_bbox()
 
 map <- 
@@ -57,15 +42,11 @@ map <-
     lng2 = as.numeric(bounds[3] + 0.015), 
     lat2 = as.numeric(bounds[4] + 0.015)
   )
-```
 
-```{r echo = FALSE, purl = FALSE}
-map
-```
 
-## Marker
 
-```{r}
+
+## --------------------------------------------------------------------------------------------------
 custom_popup <- function(data, header) {
   text <- 
     glue::glue(
@@ -75,9 +56,9 @@ custom_popup <- function(data, header) {
     )
   return(text)
 }
-```
 
-```{r}
+
+## --------------------------------------------------------------------------------------------------
 map <- 
   map |> 
   addAwesomeMarkers(
@@ -131,24 +112,20 @@ map <-
       header = "Leichter Unfall"
     )
   )
-```
 
-```{r echo = FALSE, purl = FALSE}
-map
-```
 
-## Stadtteile als Shapefile
 
-```{r}
+
+## --------------------------------------------------------------------------------------------------
 custom_label <- function(data) {
   text <- glue::glue(
     "{data$district}: {data$n} Unfälle"
   )
   return(text)
 }
-```
 
-```{r}
+
+## --------------------------------------------------------------------------------------------------
 districts <-
   data |> 
   st_as_sf(coords = c("lng", "lat"), crs = "WGS84") |> 
@@ -176,9 +153,9 @@ districts <-
   select(district, district_polygon, n) |> 
   unique() |> 
   st_as_sf()
-```
 
-```{r}
+
+## --------------------------------------------------------------------------------------------------
 map <-
   map |> 
   addPolygons(
@@ -196,15 +173,11 @@ map <-
     ),
     label = ~custom_label(data = districts)
   )
-```
 
-```{r echo = FALSE, purl = FALSE}
-map
-```
 
-## Bedienelemente
 
-```{r}
+
+## --------------------------------------------------------------------------------------------------
 map <- 
   map |> 
     addProviderTiles(
@@ -217,20 +190,15 @@ map <-
       overlayGroups = c("Tödliche Unfälle", "Schwere Unfälle", "Leichte Unfälle"),
       options = layersControlOptions(collapsed = FALSE)
     )
-```
 
-## Finale Karte
 
-```{r purl = FALSE}
-map
-```
 
-```{r eval = !knitr::is_html_output(), echo = FALSE}
+
+## ----eval = !knitr::is_html_output(), echo = FALSE-------------------------------------------------
 ## append this
 mapview::mapshot(
   x = map,
   url = here::here("output/assignment/aufgabe-a/leaflet.html"),
   selfcontained = TRUE
 )
-```
 

@@ -1,5 +1,6 @@
-# build book
+# BUILD SCRIPT ----
 
+## build book ----
 # check if ./docs/ exists and create
 if (!dir.exists(here::here("docs"))) {
   dir.create(
