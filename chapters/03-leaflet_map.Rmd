@@ -19,7 +19,7 @@ load(
 )
 ```
 
-```{r include = FALSE}
+```{r eval = !knitr::is_html_output()}
 load("data.rda")
 ```
 
@@ -229,7 +229,7 @@ map
 ## append this
 mapview::mapshot(
   x = map,
-  url = here::here("output/assignment/aufgabe-a/leaflet.html"),
+  url = here::here("output/assignment/aufgabe-a/unfaelle-leaflet.html"),
   selfcontained = TRUE
 )
 ```
