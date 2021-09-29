@@ -1,9 +1,14 @@
 language: r
 r: release
+latex: false
 
-warnings_are_errors: no
+warnings_are_errors: false
 
 cache:
-  packages: yes
+  packages: true
 
+r_packages:
+  - tidyverse
 
+script:
+    - R -f R/_deploy.R
