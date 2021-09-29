@@ -103,3 +103,17 @@ file.copy(
   from = here::here("R/unfaelle-dashboard.Rmd"),
   to = here::here("assignment/aufgabe-c/unfaelle-dashboard.Rmd")
 )
+
+# zip ----
+
+library(zip)
+
+for (folder in list.dirs(here::here("assignment"), full.names = FALSE, recursive = FALSE)) {
+  zip(
+    zipfile = here::here("assignment", folder, glue::glue("{folder}.zip")),
+    files = here::here("assignment", folder),
+    recurse = TRUE,
+    include_directories = TRUE,
+    mode = "cherry-pick"
+  )
+}

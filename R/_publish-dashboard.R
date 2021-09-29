@@ -1,7 +1,9 @@
 # deploy script
+# does not work...
 
-library(rsconnect)
-
-rmarkdown::run(
-  file = here::here("R/unfaelle-dashboard.Rmd")
+rsconnect::deployDoc(
+  doc = here::here("R/unfaelle-dashboard.Rmd"),
+  appName = "unfaelle-regensburg",
+  appTitle = "Unfälle Regensburg",
+  forceUpdate = TRUE
 )
