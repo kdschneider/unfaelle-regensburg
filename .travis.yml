@@ -9,6 +9,7 @@ cache:
 
 r_packages:
   - tidyverse
+  - here
 
 script:
     - R -f R/_deploy.R
