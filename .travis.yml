@@ -8,8 +8,14 @@ cache:
   packages: true
 
 r_packages:
+  - rmarkdown
+  - knitr
+  - bookdown
   - tidyverse
   - here
+  - leaflet
+  - shiny
+  - flexdashboard
 
 script:
     - R -f R/_deploy.R
