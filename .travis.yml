@@ -8,6 +8,9 @@ warnings_are_errors: false
 cache:
   packages: true
 
+before_install:
+  - sudo apt-get libudunits2-dev
+
 r_packages:
   - rmarkdown
   - knitr
