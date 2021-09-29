@@ -9,6 +9,7 @@ cache:
   packages: true
 
 apt_packages:
+  - libgdal-dev
   - libudunits2-dev
 
 r_packages:
