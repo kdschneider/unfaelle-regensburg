@@ -6,10 +6,7 @@ library(leaflet)
 library(sf)
 ```
 
-```{r echo = FALSE, purl = FALSE}
-# change to:
-# load("data.rda")
-
+```{r echo = FALSE}
 load(
   here::here("data/regensburg_data.rda")
 )
@@ -17,10 +14,6 @@ load(
 load(
   here::here("data/shapefiles.rda")
 )
-```
-
-```{r eval = !knitr::is_html_output()}
-load("data.rda")
 ```
 
 ```{r}
@@ -229,7 +222,7 @@ map
 ## append this
 mapview::mapshot(
   x = map,
-  url = here::here("output/assignment/aufgabe-a/unfaelle-leaflet.html"),
+  url = "./output/unfaelle-leaflet.html",
   selfcontained = TRUE
 )
 ```
