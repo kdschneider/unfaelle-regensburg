@@ -1,0 +1,13 @@
+name: unfaelle-regensburg
+title: unfaelle-regensburg
+username:
+account: kdschneider
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4761398
+bundleId: 5086947
+url: https://kdschneider.shinyapps.io/unfaelle-regensburg/
+when: 1632949049.26288
+lastSyncTime: 1632949049.26288
+asMultiple: FALSE
+asStatic: FALSE
