@@ -59,10 +59,3 @@ if (dir.exists(here::here("_bookdown_files"))) {
     force = TRUE
   )
 }
-
-
-# create assignment files ----
-source(
-  here::here("R/_assignment.R"),
-  echo = TRUE
-)

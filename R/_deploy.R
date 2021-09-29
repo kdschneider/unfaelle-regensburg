@@ -1,7 +1,5 @@
 # deploy script
 
-if (require(tidyverse)) {
-  print("Funktioniert!")
-} else {
-  print("Oh noooo....")
-}
+source(
+  here::here("R/_build.R")
+)
