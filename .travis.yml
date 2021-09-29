@@ -1,6 +1,6 @@
 language: r
 os: linux
-r: release
+r: 4.1.1
 latex: false
 
 warnings_are_errors: false
