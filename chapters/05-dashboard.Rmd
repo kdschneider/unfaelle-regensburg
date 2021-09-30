@@ -1,0 +1,7 @@
+# (APPENDIX) Sonstiges {-}
+# Dashboard {#dashboard}
+
+```{r out.width="100%"}
+knitr::include_url("https://kdschneider.shinyapps.io/unfaelle-regensburg/")
+```
+

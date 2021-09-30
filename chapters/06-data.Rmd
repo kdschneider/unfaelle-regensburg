@@ -1,0 +1,14 @@
+# Daten {#data-table}
+
+```{r}
+load(
+  here::here("data/regensburg_data.rda")
+)
+```
+
+```{r}
+data |> 
+  DT::datatable()
+```
+
+

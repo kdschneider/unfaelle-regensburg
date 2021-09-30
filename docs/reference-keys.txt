@@ -22,3 +22,5 @@ unfälle-nach-uhrzeit
 unfälle-nach-ortsteil
 absolute-anzahl
 pro-quadratkilometer
+dashboard
+data-table
