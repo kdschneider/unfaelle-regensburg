@@ -7,7 +7,7 @@ output:
       bg: NULL
       fg: NULL
       primary: "#008993"
-      secondary: NULL
+      secondary: "#FFFFFF"
       info: NULL
       warning: NULL
       danger: NULL
@@ -32,7 +32,12 @@ library(sf)
 library(DT)
 library(viridis)
 
-thematic::thematic_rmd(font = "auto")
+thematic::thematic_rmd(
+  bg = "auto",
+  fg = "auto",
+  accent = "auto",
+  font = "auto"
+)
 # bslib::bs_themer()
 
 load(
@@ -71,8 +76,10 @@ filtered_data <-
 ```
 
 
-Sidebar {.sidebar}
+{.sidebar}
 ====
+
+<h4>Filter</h4>
 
 ```{r}
 # Define inputs
@@ -321,12 +328,21 @@ filtered_districts <- reactive({
       res |> 
       st_as_sf()
   }
+
+  if (input$selected_scale == "norm") {
+    res <-
+      res |> 
+      mutate(
+        n = n/max(res$n)
+      ) |> 
+      st_as_sf()
+  }  
   
   if (input$selected_scale == "relative") {
     res <-
       res |> 
       mutate(
-        n = n/max(res$n)
+        n = n/max(cumsum(res$n))
       ) |> 
       st_as_sf()
   }
@@ -396,6 +412,7 @@ absolutePanel(
     label = "",
     choices = c(
       "Absolut" = "absolute",
+      "Normiert" = "norm",
       "Relativ" = "relative"
     ), 
     selected = "Absolut"
@@ -410,7 +427,8 @@ Spalte 2
 
 ```{r}
 output$district_plot <- renderPlot({
-  filtered_districts() |>
+  plot <- 
+    filtered_districts() |>
     ggplot(aes(x = district, y = n)) +
     geom_bar(
       aes(fill = n),
@@ -423,8 +441,72 @@ output$district_plot <- renderPlot({
       panel.background = element_blank()
     ) +
     coord_flip()
+  
+  if (input$selected_scale == "relative") {
+    plot <- 
+      plot +
+      scale_y_continuous(
+        labels = scales::label_percent(accuracy = 1)
+      )
+  }
+  
+  return(plot)
 })
 
 plotOutput("district_plot")
+```
+
+
+Info
+====
+
+Über {data-width=350}
+----
+
+###
+
+<h4>Über</h4>
+
+Dieses Dashboard visualisiert Unfälle mit Personenschaden, die sich im Stadtgebiet Regensburg zugetragen haben. Die entstammen dem deutschlandweiten Unfallatlas des statistischen Bundesamts (LINK).
+
+Es entstand als Teil meines Abschlussprojekts des Kurses "Daten Visualisieren" der Universität Regensburg. Der Rest des Projektes kann kann unter meiner [persönlichen Website](https://www.kdschneider.github.io/unfaelle-regensburg), bzw. auf [Github](https://www.github.com/kdschneider/unfaelle-regensburg), gefunden werden.
+
+Daten {data-width=650}
+----
+
+###
+
+<h4>Daten</h4>
+
+```{r}
+output$data_table <- DT::renderDataTable({
+  filtered_data() |> 
+    select(year:street_condition) |> 
+    mutate(
+      hour = glue::glue("{hour}:00 Uhr"),
+      weekday = case_when(
+        weekday == "Mon" ~ "Mo",
+        weekday == "Tue" ~ "Di",
+        weekday == "Wed" ~ "Mi",
+        weekday == "Thu" ~ "Do",
+        weekday == "Fri" ~ "Fr",
+        weekday == "Sat" ~ "Sa",
+        weekday == "Son" ~ "So"
+      )
+    ) |> 
+    DT::datatable(
+      colnames = c(
+        "Jahr" = "year",
+        "Monat" = "month",
+        "Zeit" = "hour",
+        "Tag" = "weekday",
+        "Schwere" = "severity",
+        "Licht" = "light_condition",
+        "Boden" = "street_condition"
+      )
+    )
+})
+
+DT::dataTableOutput("data_table")
 ```
 
