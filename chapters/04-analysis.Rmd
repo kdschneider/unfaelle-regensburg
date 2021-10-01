@@ -59,7 +59,7 @@ RelativeChange <- function(start_year, end_year) {
 }
 ```
 
-Abbildung \@ref(fig:unfaelle-jaehrlich) zeigt die Anzahl der jährlichen Unfälle in Regensburg. Im Jahr 2020 zeigt sich ein Rückgang von `r round(RelativeChange(2019, 2020), digits = 0)`%. Dieser kann auf geringeren Verkehr aufgrund der Corona Pandemie zurückgeführt werden. Dies wird durch Abbildung \@ref(fig:unfaelle-jaehrlich-typ) verdeutlicht: Alle dokumentierten Verkehrsmittel hatten einen Rückgang der jährlichen Unfälle von 2019 bis 2020.
+Abbildung \@ref(fig:unfaelle-jaehrlich) zeigt die Anzahl der jährlichen Unfälle in Regensburg. Im Jahr 2020 zeigt sich ein Rückgang von `r round(RelativeChange(2019, 2020), digits = 0)`%. Dieser könnte auf geringeren Verkehr aufgrund der Corona Pandemie zurückgeführt werden. Dies wird durch Abbildung \@ref(fig:unfaelle-jaehrlich-typ) verdeutlicht: Alle dokumentierten Verkehrsmittel hatten einen Rückgang der jährlichen Unfälle von 2019 bis 2020.
 
 ```{r unfaelle-jaehrlich, cache = TRUE, fig.cap = "Jährliche Unfälle mit Personenschaden."}
 data |> 
@@ -117,6 +117,7 @@ data |>
   )
 ```
 
+Der wichtigste Faktor, der die Unfälle unterscheidet, ist die Schwere der schlimmsten Verletzung (Leicht, Schwer, Tödlich). Ungefähr `r round(nrow(filter(data, severity == "Leicht")) / nrow(data), digits = 2) * 100`% Unfälle gehen mit höchstens leichten Verletzungen aus. Lediglich `r round(nrow(filter(data, severity == "Toedlich")) / nrow(data), digits = 2) * 100`% der Unfälle enden tödlich.
 
 ## Unfälle nach Monat
 
@@ -147,6 +148,8 @@ data.barplot <-
       fct_rev()
     )
 ```
+
+Abbildung \@reg(fig:unfaelle-monthly) zeigt die monatliche Verteilung der dokumentierten Unfälle. Es lässt sich ablesen, dass die Anzahl der Unfälle vom Winter bis Sommer ansteigt und in Juli ein Maximum annimmt. Mit dem Beginn der Sommerferien in Bayern im August sinkt die Anzahlt der Unfälle dann um `r round(1 - nrow(filter(data.barplot, month == "Aug")) / nrow(filter(data.barplot, month == "Jul")), digits = 2) * 100`%. 
 
 ```{r, fig.height = 6}
 plot.bar.month_1 <- 
@@ -202,7 +205,7 @@ plot.bar.month_3 <-
   )
 ```
 
-```{r, fig.height = 6}
+```{r unfaelle-monthly, fig.height = 6}
 plot.bar.month_1 / 
   plot.bar.month_2 / 
   plot.bar.month_3 + 
@@ -220,6 +223,8 @@ plot.bar.month_1 /
     )
   )
 ```
+
+Die Schwere der Unfälle unterscheidet sich zwischen den Jahreszeiten kaum.
 
 ## Unfälle nach Uhrzeit
 

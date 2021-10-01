@@ -21,10 +21,7 @@ nocite: '@*'
 
 # Index {#index -}
 
-## Aufgabe {-}
-
-> Ein Datenprojekt Ihrer Wahl. Dies muss nicht in R realisiert sein, kann mit einem Werkzeug Ihrer Wahl entstehen.  
-> Ziel: Text und überzeugende Darstellung der Ergebnisse.
+Dieses Datenprjekt entstand als Abschlussprojekt zum Kurs "Daten Visualisieren" der Uni Regensburg. 
 
 ```{r include=FALSE}
 knitr::write_bib(

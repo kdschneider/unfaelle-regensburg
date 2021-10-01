@@ -24,3 +24,5 @@ absolute-anzahl
 pro-quadratkilometer
 dashboard
 data-table
+cover-image-path-to-the-social-sharing-image-like-imagescover.jpg
+schwere-des-unfalls

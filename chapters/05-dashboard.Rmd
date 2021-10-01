@@ -1,7 +1,7 @@
 # (APPENDIX) Sonstiges {-}
 # Dashboard {#dashboard}
 
-```{r out.width="100%"}
-knitr::include_url("https://kdschneider.shinyapps.io/unfaelle-regensburg/")
+```{r dashboard, echo = FALSE, out.width="100%"}
+knitr::include_app("https://kdschneider.shinyapps.io/unfaelle-regensburg/")
 ```
 

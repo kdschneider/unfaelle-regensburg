@@ -161,36 +161,38 @@ data |>
 
 ## Geocode
 
-```{r}
-# pb <- 
-#   progress::progress_bar$new(
-#     format = "Lade Geodaten :current/:total [:bar] :percent (eta: :eta)",
-#     total = nrow(data)
-#   )
-# 
-# pb$tick(0)
-# 
-# data <- 
-#   map2_dfr(
-#     .x = data$lng,
-#     .y = data$lat,
-#     .f = function(x = .x, y = .y){
-#       
-#       geodata <- photon::reverse(x, y) |> 
-#         select(name:country)
-#       
-#       pb$tick()
-#       
-#       return(geodata)
-#     }
-#   ) |>
-#   mutate(
-#     id = row_number(),
-#     street = ifelse(is.na(street), name, street)
-#   ) |>
-#   right_join(data, by = c("id"))
-# 
-# remove(pb)
+Der folgende Chunk fügt den einzelnen Unfällen die passende Adresse hinzu. Dies dauert wegen fehlender Parallelisierung recht lange (1-2 Stunden), und wurde in der Auswertung nicht wirklich benötigt. Daher wird der Code nicht ausgeführt. 
+
+```{r eval = FALSE}
+pb <-
+  progress::progress_bar$new(
+    format = "Lade Geodaten :current/:total [:bar] :percent (eta: :eta)",
+    total = nrow(data)
+  )
+
+pb$tick(0)
+
+data <-
+  map2_dfr(
+    .x = data$lng,
+    .y = data$lat,
+    .f = function(x = .x, y = .y){
+
+      geodata <- photon::reverse(x, y) |>
+        select(name:country)
+
+      pb$tick()
+
+      return(geodata)
+    }
+  ) |>
+  mutate(
+    id = row_number(),
+    street = ifelse(is.na(street), name, street)
+  ) |>
+  right_join(data, by = c("id"))
+
+remove(pb)
 ```
 
 ## CSV/RDA speichern.

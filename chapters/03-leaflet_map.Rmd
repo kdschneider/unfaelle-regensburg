@@ -1,5 +1,7 @@
 # Leaflet Karte {#leaflet-map}
 
+Teil der Aufgabenstellung war der Export einer mit Leaflet erstellten Karte mit geclusterten Punkten. Das Ergebnis dieses Kapitels wird für die Abgabe durch ein externes Script ausgeführt, das die Karte als HTML-Datei speichert. 
+
 ```{r}
 library(tidyverse)
 library(leaflet)
