@@ -1,7 +1,11 @@
 # (APPENDIX) Sonstiges {-}
 # Dashboard {#dashboard}
 
+Die Daten dieses Projekts wurden verwendet, um ein Dashboard zu erstellen. Dieses wurde mit dem Paket `flexdashboard` erstellt. `shiny` verleiht dem Dashboard Interaktivität.
+
 ```{r dashboard, echo = FALSE, out.width="100%"}
-knitr::include_app("https://kdschneider.shinyapps.io/unfaelle-regensburg/")
+knitr::include_app(
+  url = "https://kdschneider.shinyapps.io/unfaelle-regensburg/")
 ```
 
+Eine Liveversion der App kann [hier](https://www.kdschneider.shinyapps.io/unfaelle-regensburg) gefunden werden. 

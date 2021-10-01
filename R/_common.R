@@ -30,5 +30,6 @@ scale_fill_custom <-
   viridis::scale_fill_viridis(
     discrete = TRUE,
     option = "D",
-    direction = -1
+    direction = -1,
+    end = 0.7
   )

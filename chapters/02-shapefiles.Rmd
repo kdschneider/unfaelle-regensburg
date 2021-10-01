@@ -5,7 +5,7 @@ library(tidyverse)
 library(sf)
 ```
 
-Die restlichen Shapefiles (Stadtgrenze, Stadtteile, Gewässer, Autobahnen) stammen vom [Amt für Stadtentwicklung Regensburg](http://www.statistik.regensburg.de/)
+Die verwendeten Shapefiles (Stadtgrenze, Stadtteile, Gewässer, Autobahnen) stammen vom [Amt für Stadtentwicklung Regensburg](http://www.statistik.regensburg.de/)
 
 ## Stadtgrenze Regensburg
 

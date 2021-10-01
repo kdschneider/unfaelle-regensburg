@@ -119,6 +119,28 @@ data |>
 
 Der wichtigste Faktor, der die Unfälle unterscheidet, ist die Schwere der schlimmsten Verletzung (Leicht, Schwer, Tödlich). Ungefähr `r round(nrow(filter(data, severity == "Leicht")) / nrow(data), digits = 2) * 100`% Unfälle gehen mit höchstens leichten Verletzungen aus. Lediglich `r round(nrow(filter(data, severity == "Toedlich")) / nrow(data), digits = 2) * 100`% der Unfälle enden tödlich.
 
+```{r}
+data |> 
+  filter(severity == "Toedlich") |> 
+  select(-id, -truck, -lng, -lat, -datetime, -date) |> 
+  rename(
+    "Jahr" = "year",
+    "Monat" = "month", 
+    "Zeit" = "hour",
+    "Tag" = "weekday",
+    "Schwere" = "severity",
+    "Licht" = "light_condition",
+    "Straße" = "street_condition",
+    "Fahrrad" = "bicycle",
+    "Auto" = "car",
+    "Fußgänger" = "pedestrian",
+    "Motorrad" = "bike"
+  ) |> 
+  DT::datatable(
+    caption = "Unfälle mit Todefolge."
+  )
+```
+
 ## Unfälle nach Monat
 
 ```{r}
@@ -149,7 +171,7 @@ data.barplot <-
     )
 ```
 
-Abbildung \@reg(fig:unfaelle-monthly) zeigt die monatliche Verteilung der dokumentierten Unfälle. Es lässt sich ablesen, dass die Anzahl der Unfälle vom Winter bis Sommer ansteigt und in Juli ein Maximum annimmt. Mit dem Beginn der Sommerferien in Bayern im August sinkt die Anzahlt der Unfälle dann um `r round(1 - nrow(filter(data.barplot, month == "Aug")) / nrow(filter(data.barplot, month == "Jul")), digits = 2) * 100`%. 
+Abbildung \@reg(fig:unfaelle-monthly) zeigt die monatliche Verteilung der dokumentierten Unfälle. Es lässt sich ablesen, dass die Anzahl der Unfälle vom Winter bis Sommer ansteigt und in Juli ein Maximum annimmt. Mit dem Beginn der Sommerferien in Bayern im August sinkt die Anzahlt der Unfälle dann um `r round(1 - nrow(filter(data.barplot, month == "Aug")) / nrow(filter(data.barplot, month == "Jul")), digits = 2) * 100`%.
 
 ```{r, fig.height = 6}
 plot.bar.month_1 <- 
@@ -284,7 +306,11 @@ plot.bar.time_3 <-
   )
 ```
 
-```{r, fig.height = 6}
+Die meisten Unfälle mit personenschade finden tagsüber statt. Zusätzlich zeigt Abbildung \@ref(fig:unfaelle-time) zwei Peaks: Um sieben Uhr und von 16-17 Uhr. Diese stimmen mit dem Arbeitsverkehr überein.
+
+Abbildung \@ref(fig:unfaell-time) zeigt auch, dass Unfälle bei Dunkelheit zwischen 16 und 6 Uhr stattfinden. Das ist keine überraschende Erkenntnis, stärkt aber das Vertrauen in die Zuverlässigkeit der Daten.
+
+```{r unfaelle-time, fig.height = 6}
 plot.bar.time_1 / 
   plot.bar.time_2 / 
   plot.bar.time_3 +
@@ -301,9 +327,7 @@ plot.bar.time_1 /
   )
 ```
 
-## Unfälle nach Ortsteil
-
-### Absolute Anzahl
+## Wo finden die meisten Unfälle statt?
 
 ```{r}
 sf.data <-
@@ -373,7 +397,11 @@ plot.district_total_map <-
   )
 ```
 
-```{r}
+Abbildung \@ref(fig:unfaell-district1) zeigt die Anzahl an Unfällen von `r min(data$year)` und `r max(data$year)`. In diesem Zeitraum haben sich die meisten Unfälle in der Regensburger Innenstadt (`r filter(data.district_plot, district == "Innenstadt")$n`) zugetragen.
+
+Berechnet man die Unfälle pro Quadratkilometer, wird der Unterschied zwischen der Innenstadt und den Umliegenden Stadtteilen noch eindeutiger (siehe Abbildung \@ref(unfaelle-distirct2)).
+
+```{r unfaelle-district1}
 plot.district_total_bar + 
   inset_element(
     plot.district_total_map, 
@@ -388,8 +416,6 @@ plot.district_total_bar +
   ) & 
   scale_fill_viridis(option = "D")
 ```
-
-### Pro Quadratkilometer
 
 ```{r}
 data.district_m2_plot <- 
@@ -435,7 +461,7 @@ plot.district_m2_map <-
   )
 ```
 
-```{r}
+```{r unfaelle-district2}
 plot.district_m2_bar +
   inset_element(
     plot.district_m2_map,
@@ -451,3 +477,104 @@ plot.district_m2_bar +
   scale_fill_viridis(option = "D")
 ```
 
+## Welches ist das gefährlichste Verkehrsmittel
+
+Betrachtet man die absolute Anzahl der Unfälle mit Personenschaden (siehe Abbildung \@ref(fig:who1)), kommt der Eindruck zustande, dass das Auto das gefährlichste Verkehrsmittel ist. Normiert man die Daten (sieh Abbildung \@ref(fig:who2)), zeigt sich dagegen, dass das Auto relativ sicher ist. So besitzt es das geringste Verhältnis zwischen schweren/tödlichen und leichten Unfällen. 
+
+```{r who1}
+data |> 
+  select(severity, bicycle:bike) |> 
+  pivot_longer(-severity) |> 
+  filter(value == TRUE) |> 
+  mutate(
+    name = as_factor(name) |> 
+      fct_infreq() |> 
+      fct_recode(
+        "Auto" = "car",
+        "Fahrrad" = "bicycle",
+        "Motorrad" = "bike",
+        "Fußgänger" = "pedestrian"
+      )
+  ) |> 
+  count(severity, name) |> 
+  ggplot() + 
+  geom_col(aes(x = name, y = n, fill = severity)) +
+  labs(
+    title = "Unfälle nach Verkehrsteilnehmer",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
+    y = "Anzahl an Unfällen",
+    fill = "Schwere"
+  ) +
+  scale_fill_custom +
+  theme(axis.title.x = element_blank())
+```
+
+```{r who2}
+data |> 
+  select(severity, bicycle:bike) |> 
+  pivot_longer(-severity) |> 
+  filter(value == TRUE) |> 
+  mutate(
+    name = as_factor(name) |> 
+      fct_infreq() |> 
+      fct_recode(
+        "Auto" = "car",
+        "Fahrrad" = "bicycle",
+        "Motorrad" = "bike",
+        "Fußgänger" = "pedestrian"
+      )
+  ) |> 
+  count(severity, name) |> 
+  ggplot() + 
+  geom_col(aes(x = name, y = n, fill = severity), position = position_fill()) +
+  labs(
+    title = "Unfälle nach Verkehrsteilnehmer",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
+    y = "Anzahl an Unfällen",
+    fill = "Schwere"
+  ) +
+  scale_fill_custom +
+  theme(axis.title.x = element_blank())
+```
+
+In Relation zur Gesamtanzahl der Unfälle mit Personenschaden der einzelnen Verkehrsmittel, sind an den meisten tödlichen Unfällen Motorradfahrer beteiligt (siehe \@ref(fig:who3)).
+
+```{r who3}
+data |> 
+  select(severity, bicycle:bike) |> 
+  pivot_longer(-severity) |> 
+  filter(value == TRUE) |> 
+  mutate(
+    name = as_factor(name) |> 
+      fct_infreq() |> 
+      fct_recode(
+        "Auto" = "car",
+        "Fahrrad" = "bicycle",
+        "Motorrad" = "bike",
+        "Fußgänger" = "pedestrian"
+      )
+  ) |> 
+  add_count(name) |> 
+  rename("n1" = n) |> 
+  count(severity, name, n1) |> 
+  rename("n2" = n) |>
+  mutate(
+    n = n2/n1
+  ) |>
+  filter(severity == "Toedlich") |>
+  ggplot() +
+  geom_col(aes(x = name, y = n, fill = "severity")) +
+  labs(
+    title = "Unfälle nach Verkehrsteilnehmer",
+    subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
+    y = "Anteil an Unfällen"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_percent()
+  ) +
+  scale_fill_custom +
+  theme(
+    axis.title.x = element_blank(),
+    legend.position = "none"
+  )
+```
