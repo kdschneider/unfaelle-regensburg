@@ -1,6 +1,0 @@
-`r if (knitr::is_html_output()) '
-# Verwendete Pakete {#packages -}
-
-<div id="refs"></div>
-
-'`

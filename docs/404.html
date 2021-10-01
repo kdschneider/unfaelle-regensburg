@@ -62,6 +62,23 @@
 <script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
 <link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script>
+<link href="libs/leaflet-awesomemarkers-2.0.3/leaflet.awesome-markers.css" rel="stylesheet" />
+<script src="libs/leaflet-awesomemarkers-2.0.3/leaflet.awesome-markers.min.js"></script>
+<link href="libs/ionicons-2.0.1/ionicons.min.css" rel="stylesheet" />
+<link href="libs/leaflet-markercluster-1.0.5/MarkerCluster.css" rel="stylesheet" />
+<link href="libs/leaflet-markercluster-1.0.5/MarkerCluster.Default.css" rel="stylesheet" />
+<script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.js"></script>
+<script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.freezable.js"></script>
+<script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.layersupport.js"></script>
 
 
 <style type="text/css">
@@ -172,37 +189,34 @@ div.csl-indent {
 <li><a href="./">Unfälle Regensburg</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> cover-image: path to the social sharing image like images/cover.jpg</a></li>
-<li class="chapter" data-level="2" data-path="2-data.html"><a href="2-data.html"><i class="fa fa-check"></i><b>2</b> Unfalldaten</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Index</a></li>
+<li class="chapter" data-level="1" data-path="1-data.html"><a href="1-data.html"><i class="fa fa-check"></i><b>1</b> Unfalldaten</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="2-data.html"><a href="2-data.html#geocode"><i class="fa fa-check"></i><b>2.1</b> Geocode</a></li>
-<li class="chapter" data-level="2.2" data-path="2-data.html"><a href="2-data.html#csvrda-speichern."><i class="fa fa-check"></i><b>2.2</b> CSV/RDA speichern.</a></li>
+<li class="chapter" data-level="1.1" data-path="1-data.html"><a href="1-data.html#geocode"><i class="fa fa-check"></i><b>1.1</b> Geocode</a></li>
+<li class="chapter" data-level="1.2" data-path="1-data.html"><a href="1-data.html#csvrda-speichern."><i class="fa fa-check"></i><b>1.2</b> CSV/RDA speichern.</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="3-shapefiles.html"><a href="3-shapefiles.html"><i class="fa fa-check"></i><b>3</b> Shapefiles</a>
+<li class="chapter" data-level="2" data-path="2-shapefiles.html"><a href="2-shapefiles.html"><i class="fa fa-check"></i><b>2</b> Shapefiles</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="3-shapefiles.html"><a href="3-shapefiles.html#stadtgrenze-regensburg"><i class="fa fa-check"></i><b>3.1</b> Stadtgrenze Regensburg</a></li>
-<li class="chapter" data-level="3.2" data-path="3-shapefiles.html"><a href="3-shapefiles.html#stadtteile"><i class="fa fa-check"></i><b>3.2</b> Stadtteile</a></li>
-<li class="chapter" data-level="3.3" data-path="3-shapefiles.html"><a href="3-shapefiles.html#autobahnen"><i class="fa fa-check"></i><b>3.3</b> Autobahnen</a></li>
-<li class="chapter" data-level="3.4" data-path="3-shapefiles.html"><a href="3-shapefiles.html#flüsse"><i class="fa fa-check"></i><b>3.4</b> Flüsse</a></li>
-<li class="chapter" data-level="3.5" data-path="3-shapefiles.html"><a href="3-shapefiles.html#finale-karte"><i class="fa fa-check"></i><b>3.5</b> Finale Karte</a></li>
+<li class="chapter" data-level="2.1" data-path="2-shapefiles.html"><a href="2-shapefiles.html#stadtgrenze-regensburg"><i class="fa fa-check"></i><b>2.1</b> Stadtgrenze Regensburg</a></li>
+<li class="chapter" data-level="2.2" data-path="2-shapefiles.html"><a href="2-shapefiles.html#stadtteile"><i class="fa fa-check"></i><b>2.2</b> Stadtteile</a></li>
+<li class="chapter" data-level="2.3" data-path="2-shapefiles.html"><a href="2-shapefiles.html#autobahnen"><i class="fa fa-check"></i><b>2.3</b> Autobahnen</a></li>
+<li class="chapter" data-level="2.4" data-path="2-shapefiles.html"><a href="2-shapefiles.html#flüsse"><i class="fa fa-check"></i><b>2.4</b> Flüsse</a></li>
+<li class="chapter" data-level="2.5" data-path="2-shapefiles.html"><a href="2-shapefiles.html#finale-karte"><i class="fa fa-check"></i><b>2.5</b> Finale Karte</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="4-leaflet-map.html"><a href="4-leaflet-map.html"><i class="fa fa-check"></i><b>4</b> Leaflet Karte</a>
+<li class="chapter" data-level="3" data-path="3-leaflet-map.html"><a href="3-leaflet-map.html"><i class="fa fa-check"></i><b>3</b> Leaflet Karte</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="4-leaflet-map.html"><a href="4-leaflet-map.html#basemap"><i class="fa fa-check"></i><b>4.1</b> Basemap</a></li>
-<li class="chapter" data-level="4.2" data-path="4-leaflet-map.html"><a href="4-leaflet-map.html#marker"><i class="fa fa-check"></i><b>4.2</b> Marker</a></li>
-<li class="chapter" data-level="4.3" data-path="4-leaflet-map.html"><a href="4-leaflet-map.html#stadtteile-als-shapefile"><i class="fa fa-check"></i><b>4.3</b> Stadtteile als Shapefile</a></li>
-<li class="chapter" data-level="4.4" data-path="4-leaflet-map.html"><a href="4-leaflet-map.html#bedienelemente"><i class="fa fa-check"></i><b>4.4</b> Bedienelemente</a></li>
-<li class="chapter" data-level="4.5" data-path="4-leaflet-map.html"><a href="4-leaflet-map.html#finale-karte-1"><i class="fa fa-check"></i><b>4.5</b> Finale Karte</a></li>
+<li class="chapter" data-level="3.1" data-path="3-leaflet-map.html"><a href="3-leaflet-map.html#basemap"><i class="fa fa-check"></i><b>3.1</b> Basemap</a></li>
+<li class="chapter" data-level="3.2" data-path="3-leaflet-map.html"><a href="3-leaflet-map.html#marker"><i class="fa fa-check"></i><b>3.2</b> Marker</a></li>
+<li class="chapter" data-level="3.3" data-path="3-leaflet-map.html"><a href="3-leaflet-map.html#stadtteile-als-shapefile"><i class="fa fa-check"></i><b>3.3</b> Stadtteile als Shapefile</a></li>
+<li class="chapter" data-level="3.4" data-path="3-leaflet-map.html"><a href="3-leaflet-map.html#bedienelemente"><i class="fa fa-check"></i><b>3.4</b> Bedienelemente</a></li>
+<li class="chapter" data-level="3.5" data-path="3-leaflet-map.html"><a href="3-leaflet-map.html#finale-karte-1"><i class="fa fa-check"></i><b>3.5</b> Finale Karte</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="5-total-crashes.html"><a href="5-total-crashes.html"><i class="fa fa-check"></i><b>5</b> Auswertung</a>
+<li class="chapter" data-level="4" data-path="4-total-crashes.html"><a href="4-total-crashes.html"><i class="fa fa-check"></i><b>4</b> Auswertung</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="5-total-crashes.html"><a href="5-total-crashes.html#unfälle-nach-monat"><i class="fa fa-check"></i><b>5.1</b> Unfälle nach Monat</a></li>
-<li class="chapter" data-level="5.2" data-path="5-total-crashes.html"><a href="5-total-crashes.html#unfälle-nach-uhrzeit"><i class="fa fa-check"></i><b>5.2</b> Unfälle nach Uhrzeit</a></li>
-<li class="chapter" data-level="5.3" data-path="5-total-crashes.html"><a href="5-total-crashes.html#unfälle-nach-ortsteil"><i class="fa fa-check"></i><b>5.3</b> Unfälle nach Ortsteil</a>
-<ul>
-<li class="chapter" data-level="5.3.1" data-path="5-total-crashes.html"><a href="5-total-crashes.html#absolute-anzahl"><i class="fa fa-check"></i><b>5.3.1</b> Absolute Anzahl</a></li>
-<li class="chapter" data-level="5.3.2" data-path="5-total-crashes.html"><a href="5-total-crashes.html#pro-quadratkilometer"><i class="fa fa-check"></i><b>5.3.2</b> Pro Quadratkilometer</a></li>
-</ul></li>
+<li class="chapter" data-level="4.1" data-path="4-total-crashes.html"><a href="4-total-crashes.html#unfälle-nach-monat"><i class="fa fa-check"></i><b>4.1</b> Unfälle nach Monat</a></li>
+<li class="chapter" data-level="4.2" data-path="4-total-crashes.html"><a href="4-total-crashes.html#unfälle-nach-uhrzeit"><i class="fa fa-check"></i><b>4.2</b> Unfälle nach Uhrzeit</a></li>
+<li class="chapter" data-level="4.3" data-path="4-total-crashes.html"><a href="4-total-crashes.html#wo-finden-die-meisten-unfälle-statt"><i class="fa fa-check"></i><b>4.3</b> Wo finden die meisten Unfälle statt?</a></li>
+<li class="chapter" data-level="4.4" data-path="4-total-crashes.html"><a href="4-total-crashes.html#welches-ist-das-gefährlichste-verkehrsmittel"><i class="fa fa-check"></i><b>4.4</b> Welches ist das gefährlichste Verkehrsmittel</a></li>
 </ul></li>
 <li class="appendix"><span><b>Sonstiges</b></span></li>
 <li class="chapter" data-level="A" data-path="A-dashboard.html"><a href="A-dashboard.html"><i class="fa fa-check"></i><b>A</b> Dashboard</a></li>

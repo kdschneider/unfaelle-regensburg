@@ -24,7 +24,7 @@
 <meta name="author" content="Konstantin Schneider" />
 
 
-<meta name="date" content="2021-09-30" />
+<meta name="date" content="2021-10-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -215,11 +215,8 @@ div.csl-indent {
 <ul>
 <li class="chapter" data-level="4.1" data-path="4-total-crashes.html"><a href="4-total-crashes.html#unfälle-nach-monat"><i class="fa fa-check"></i><b>4.1</b> Unfälle nach Monat</a></li>
 <li class="chapter" data-level="4.2" data-path="4-total-crashes.html"><a href="4-total-crashes.html#unfälle-nach-uhrzeit"><i class="fa fa-check"></i><b>4.2</b> Unfälle nach Uhrzeit</a></li>
-<li class="chapter" data-level="4.3" data-path="4-total-crashes.html"><a href="4-total-crashes.html#unfälle-nach-ortsteil"><i class="fa fa-check"></i><b>4.3</b> Unfälle nach Ortsteil</a>
-<ul>
-<li class="chapter" data-level="4.3.1" data-path="4-total-crashes.html"><a href="4-total-crashes.html#absolute-anzahl"><i class="fa fa-check"></i><b>4.3.1</b> Absolute Anzahl</a></li>
-<li class="chapter" data-level="4.3.2" data-path="4-total-crashes.html"><a href="4-total-crashes.html#pro-quadratkilometer"><i class="fa fa-check"></i><b>4.3.2</b> Pro Quadratkilometer</a></li>
-</ul></li>
+<li class="chapter" data-level="4.3" data-path="4-total-crashes.html"><a href="4-total-crashes.html#wo-finden-die-meisten-unfälle-statt"><i class="fa fa-check"></i><b>4.3</b> Wo finden die meisten Unfälle statt?</a></li>
+<li class="chapter" data-level="4.4" data-path="4-total-crashes.html"><a href="4-total-crashes.html#welches-ist-das-gefährlichste-verkehrsmittel"><i class="fa fa-check"></i><b>4.4</b> Welches ist das gefährlichste Verkehrsmittel</a></li>
 </ul></li>
 <li class="appendix"><span><b>Sonstiges</b></span></li>
 <li class="chapter" data-level="A" data-path="A-dashboard.html"><a href="A-dashboard.html"><i class="fa fa-check"></i><b>A</b> Dashboard</a></li>
@@ -262,7 +259,7 @@ Abbildung 1: Monatliche Unfälle in Regensburg.
 </p>
 </div>
 <p>Während sich kein eindeutiger Auf- oder Abwärtstrend feststellen lässt, zeigen die Daten dennoch eine Jährliche Periodizität: Im Sommer finden die meisten Unfälle mit Personenschaden statt, während die Anzahl der Unfälle von Herbst bis Frühjahr sinkt.</p>
-<p>Abbildung <a href="4-total-crashes.html#fig:unfaelle-jaehrlich">2</a> zeigt die Anzahl der jährlichen Unfälle in Regensburg. Im Jahr 2020 zeigt sich ein Rückgang von 25%. Dieser kann auf geringeren Verkehr aufgrund der Corona Pandemie zurückgeführt werden. Dies wird durch Abbildung <a href="4-total-crashes.html#fig:unfaelle-jaehrlich-typ">3</a> verdeutlicht: Alle dokumentierten Verkehrsmittel hatten einen Rückgang der jährlichen Unfälle von 2019 bis 2020.</p>
+<p>Abbildung <a href="4-total-crashes.html#fig:unfaelle-jaehrlich">2</a> zeigt die Anzahl der jährlichen Unfälle in Regensburg. Im Jahr 2020 zeigt sich ein Rückgang von 25%. Dieser könnte auf geringeren Verkehr aufgrund der Corona Pandemie zurückgeführt werden. Dies wird durch Abbildung <a href="4-total-crashes.html#fig:unfaelle-jaehrlich-typ">3</a> verdeutlicht: Alle dokumentierten Verkehrsmittel hatten einen Rückgang der jährlichen Unfälle von 2019 bis 2020.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unfaelle-jaehrlich"></span>
 <img src="unfaelle-regensburg_files/figure-html/unfaelle-jaehrlich-1.png" alt="Jährliche Unfälle mit Personenschaden." width="95%" />
 <p class="caption">
@@ -276,25 +273,72 @@ Abbildung 2: Jährliche Unfälle mit Personenschaden.
 Abbildung 3: Jährliche Unfälle mit Personenschaden nach Verkehrsteilnehmer unterteilt.
 </p>
 </div>
+<p>Der wichtigste Faktor, der die Unfälle unterscheidet, ist die Schwere der schlimmsten Verletzung (Leicht, Schwer, Tödlich). Ungefähr 87% Unfälle gehen mit höchstens leichten Verletzungen aus. Lediglich 0% der Unfälle enden tödlich.</p>
+<div id="htmlwidget-41b27b44fcf0274d34c2" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-41b27b44fcf0274d34c2">{"x":{"filter":"none","vertical":false,"caption":"<caption>Unfälle mit Todefolge.<\/caption>","data":[["1","2","3","4","5","6"],[2016,2016,2016,2018,2019,2020],[11,8,8,4,11,6],[5,15,13,12,0,17],["Thu","Mon","Sat","Tue","Fri","Tue"],["Toedlich","Toedlich","Toedlich","Toedlich","Toedlich","Toedlich"],["Dunkelheit","Tageslicht","Tageslicht","Tageslicht","Dunkelheit","Tageslicht"],["Trocken","Trocken","Trocken","Trocken","Trocken","Trocken"],[false,true,false,false,false,true],[true,false,true,false,true,true],[false,false,false,false,false,false],[true,false,true,true,false,false],[false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Jahr<\/th>\n      <th>Monat<\/th>\n      <th>Zeit<\/th>\n      <th>Tag<\/th>\n      <th>Schwere<\/th>\n      <th>Licht<\/th>\n      <th>Straße<\/th>\n      <th>Fahrrad<\/th>\n      <th>Auto<\/th>\n      <th>Fußgänger<\/th>\n      <th>Motorrad<\/th>\n      <th>other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <div id="unfälle-nach-monat" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Unfälle nach Monat</h2>
-<p><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-46-1.png" width="95%" style="display: block; margin: auto;" /></p>
+<p>Abbildung <a href="4-total-crashes.html#fig:unfaelle-monthly">4</a> zeigt die monatliche Verteilung der dokumentierten Unfälle. Es lässt sich ablesen, dass die Anzahl der Unfälle vom Winter bis Sommer ansteigt und in Juli ein Maximum annimmt. Mit dem Beginn der Sommerferien in Bayern im August sinkt die Anzahlt der Unfälle dann um 36%.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unfaelle-monthly"></span>
+<img src="unfaelle-regensburg_files/figure-html/unfaelle-monthly-1.png" alt="Monatiliche Unfälle mit Personenschaden. A) Schwere: Über das Jahr hinweg gibt es kaum relative Unterschiede. B) Lichtverhältnisse: Über die Wintermonate nehmen die Unfälle bei Dunkelheit zu. C) Die Unfälle bei Nässe nehmen von Herbst bis Winter zu. Vom Frühjahr bis Sommer nimmt die Anzahl an Unfällen bei Nässe ab." width="95%" />
+<p class="caption">
+Abbildung 4: Monatiliche Unfälle mit Personenschaden. A) Schwere: Über das Jahr hinweg gibt es kaum relative Unterschiede. B) Lichtverhältnisse: Über die Wintermonate nehmen die Unfälle bei Dunkelheit zu. C) Die Unfälle bei Nässe nehmen von Herbst bis Winter zu. Vom Frühjahr bis Sommer nimmt die Anzahl an Unfällen bei Nässe ab.
+</p>
+</div>
+<p>Die Schwere der Unfälle unterscheidet sich zwischen den Jahreszeiten kaum.</p>
 </div>
 <div id="unfälle-nach-uhrzeit" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Unfälle nach Uhrzeit</h2>
-<p><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-48-1.png" width="95%" style="display: block; margin: auto;" /></p>
+<p>Die meisten Unfälle mit Personenschaden finden tagsüber statt. Zusätzlich zeigt Abbildung <a href="4-total-crashes.html#fig:unfaelle-time">5</a> zwei Peaks: Um sieben Uhr und von 16-17 Uhr. Diese stimmen mit dem Arbeitsverkehr überein.</p>
+<p>Abbildung <a href="4-total-crashes.html#fig:unfaelle-time">5</a> zeigt auch, dass Unfälle bei Dunkelheit zwischen 16 und 6 Uhr stattfinden. Das ist keine überraschende Erkenntnis, stärkt aber das Vertrauen in die Zuverlässigkeit der Daten.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unfaelle-time"></span>
+<img src="unfaelle-regensburg_files/figure-html/unfaelle-time-1.png" alt="Unfälle nach Tageszeit." width="95%" />
+<p class="caption">
+Abbildung 5: Unfälle nach Tageszeit.
+</p>
 </div>
-<div id="unfälle-nach-ortsteil" class="section level2" number="4.3">
-<h2><span class="header-section-number">4.3</span> Unfälle nach Ortsteil</h2>
-<div id="absolute-anzahl" class="section level3" number="4.3.1">
-<h3><span class="header-section-number">4.3.1</span> Absolute Anzahl</h3>
-<p><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-53-1.png" width="95%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="pro-quadratkilometer" class="section level3" number="4.3.2">
-<h3><span class="header-section-number">4.3.2</span> Pro Quadratkilometer</h3>
-<p><img src="unfaelle-regensburg_files/figure-html/unnamed-chunk-57-1.png" width="95%" style="display: block; margin: auto;" /></p>
+<div id="wo-finden-die-meisten-unfälle-statt" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Wo finden die meisten Unfälle statt?</h2>
+<p>Abbildung <a href="4-total-crashes.html#fig:unfaelle-district1">6</a> zeigt die Anzahl an Unfällen von 2016 und 2020. In diesem Zeitraum haben sich die meisten Unfälle in der Regensburger Innenstadt (492) zugetragen.</p>
+<p>Berechnet man die Unfälle pro Quadratkilometer, wird der Unterschied zwischen der Innenstadt und den Umliegenden Stadtteilen noch eindeutiger (siehe Abbildung <a href="4-total-crashes.html#fig:unfaelle-district2">7</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unfaelle-district1"></span>
+<img src="unfaelle-regensburg_files/figure-html/unfaelle-district1-1.png" alt="Unfälle mit Personenschaden pro Stadtteil (Abolute Zahlen)." width="95%" />
+<p class="caption">
+Abbildung 6: Unfälle mit Personenschaden pro Stadtteil (Abolute Zahlen).
+</p>
+</div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unfaelle-district2"></span>
+<img src="unfaelle-regensburg_files/figure-html/unfaelle-district2-1.png" alt="Unfälle mit Personenschaden pro Quadratkilometer." width="95%" />
+<p class="caption">
+Abbildung 7: Unfälle mit Personenschaden pro Quadratkilometer.
+</p>
+</div>
+</div>
+<div id="welches-ist-das-gefährlichste-verkehrsmittel" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> Welches ist das gefährlichste Verkehrsmittel</h2>
+<p>Betrachtet man die absolute Anzahl der Unfälle mit Personenschaden (siehe Abbildung <a href="4-total-crashes.html#fig:who1">8</a>), kommt der Eindruck zustande, dass das Auto das gefährlichste Verkehrsmittel ist. Normiert man die Daten (sieh Abbildung <a href="4-total-crashes.html#fig:who2">9</a>), zeigt sich dagegen, dass das Auto relativ sicher ist. So besitzt es das geringste Verhältnis zwischen schweren/tödlichen und leichten Unfällen.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:who1"></span>
+<img src="unfaelle-regensburg_files/figure-html/who1-1.png" alt="Unfälle nach Verkehrsteilnehmer." width="95%" />
+<p class="caption">
+Abbildung 8: Unfälle nach Verkehrsteilnehmer.
+</p>
+</div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:who2"></span>
+<img src="unfaelle-regensburg_files/figure-html/who2-1.png" alt="Unfälle nach Verkehrsteilnehmer (normiert)." width="95%" />
+<p class="caption">
+Abbildung 9: Unfälle nach Verkehrsteilnehmer (normiert).
+</p>
+</div>
+<p>In Relation zur Gesamtanzahl der Unfälle mit Personenschaden der einzelnen Verkehrsmittel, sind an den meisten tödlichen Unfällen Motorradfahrer beteiligt (siehe <a href="4-total-crashes.html#fig:who3">10</a>).</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:who3"></span>
+<img src="unfaelle-regensburg_files/figure-html/who3-1.png" alt="Anteil der tödlichen Unfälle nach Verkehrsteilnehmer." width="95%" />
+<p class="caption">
+Abbildung 10: Anteil der tödlichen Unfälle nach Verkehrsteilnehmer.
+</p>
+</div>
+<p>Trotz der geringeren Gesamtanzahl an Unfällen, ist das Motorrad somit das gefährlichste Verkehrsmittel.</p>
 
-</div>
 </div>
 </div>
 

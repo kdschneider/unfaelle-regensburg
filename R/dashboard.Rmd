@@ -4,22 +4,12 @@ output:
   flexdashboard::flex_dashboard:
     theme:
       bootswatch: "journal"
-      bg: NULL
-      fg: NULL
       primary: "#008993"
-      secondary: "#FFFFFF"
-      info: NULL
-      warning: NULL
-      danger: NULL
-      base_font: NULL
-      code_font: NULL
-      heading_font: NULL
-      font_scale: NULL
     orientation: columns
     vertical_layout: fill
     source_code: embed
     fig_retina: 3
-    fig_mobile: yes
+    fig_mobile: no
 runtime: shiny
 ---
 
@@ -32,14 +22,20 @@ library(sf)
 library(DT)
 library(viridis)
 
-thematic::thematic_rmd(
-  bg = "auto",
-  fg = "auto",
-  accent = "auto",
-  font = "auto"
+# plot theme
+ggplot2::theme_set(
+  ggthemes::theme_clean()
 )
-# bslib::bs_themer()
 
+scale_fill_custom <- 
+  viridis::scale_fill_viridis(
+    discrete = TRUE,
+    option = "D",
+    direction = -1,
+    end = 0.7
+  )
+
+# load data
 load(
   here::here("data/regensburg_data.rda")
 )
@@ -49,8 +45,25 @@ load(
 )
 
 
-# map
+# common ----
 bounds <- sf.regensburg |> st_bbox()
+
+## marker ----
+getMarkerColor <- function(data) {
+  map(
+    data$severity,
+    function(x) {
+      if (x == "Toedlich") {
+        "red"
+      } else if (x == "Schwer") {
+        "orange"
+      } else if (x == "Leicht") {
+        "beige"
+      }
+    }
+  )
+}
+
 ```
 
 
@@ -123,22 +136,6 @@ Spalte 1 {data-width=8}
 ###
 
 ```{r}
-## markers ----
-getMarkerColor <- function(data) {
-  map(
-    data$severity,
-    function(x) {
-      if (x == "Toedlich") {
-        "red"
-      } else if (x == "Schwer") {
-        "orange"
-      } else if (x == "Leicht") {
-        "beige"
-      }
-    }
-  )
-}
-
 icons <- reactive({
   awesomeIcons(
     icon = 'ios-close',
@@ -147,7 +144,9 @@ icons <- reactive({
     markerColor = getMarkerColor(filtered_data())
   )
 })
-  
+```
+
+```{r}
 output$map1 <- 
   renderLeaflet({
     leaflet(
@@ -196,8 +195,8 @@ absolutePanel(
     label = "",
     choices = c(
       "Schwere" = "severity",
-      "Straßenverhältnisse" = "street_condition",
-      "Lichtverhältnisse" = "light_condition"
+      "Boden" = "street_condition",
+      "Licht" = "light_condition"
     ), 
     selected = "Schwere"
   )
@@ -209,7 +208,7 @@ absolutePanel(
 Spalte 2 {data-width=4}
 ----
 
-###
+### Monat
 
 ```{r}
 output$monthly_plot <- 
@@ -217,6 +216,27 @@ output$monthly_plot <-
     data <- filtered_data()
     
     data |> 
+      mutate(
+        month = as_factor(month) |> 
+        fct_recode(
+          "Jan" = "1",
+          "Feb" = "2",
+          "Mär" = "3",
+          "Apr" = "4",
+          "Mai" = "5",
+          "Jun" = "6",
+          "Jul" = "7",
+          "Aug" = "8",
+          "Sep" = "9",
+          "Okt" = "10",
+          "Nov" = "11",
+          "Dez" = "12"
+        ),
+        severity = fct_infreq(severity) |> 
+          fct_rev(),
+        light_condition = fct_infreq(light_condition),
+        street_condition = fct_infreq(street_condition)
+      ) |> 
       count(month, .data[[input$fill]]) |> 
       ggplot(
         aes(x = month, y = n)
@@ -228,13 +248,14 @@ output$monthly_plot <-
         legend.position = "top",
         legend.title = element_blank(),
         axis.title = element_blank()
-      )
+      ) +
+      scale_fill_custom
   })
 
 plotOutput("monthly_plot")
 ```
 
-###
+### Wochentag
 
 ```{r}
 output$weekday_plot <- 
@@ -253,13 +274,14 @@ output$weekday_plot <-
         legend.position = "top",
         legend.title = element_blank(),
         axis.title = element_blank()
-      )
+      ) +
+      scale_fill_custom
   })
 
 plotOutput("weekday_plot")
 ```
 
-###
+### Uhrzeit
 
 ```{r}
 output$hourly_plot <- 
@@ -278,7 +300,13 @@ output$hourly_plot <-
         legend.position = "top",
         legend.title = element_blank(),
         axis.title = element_blank()
-      )
+      ) +
+      scale_x_continuous(
+        labels = function(x) {
+          glue::glue("{x}:00 Uhr")
+        }
+      ) +
+      scale_fill_custom
   })
 
 plotOutput("hourly_plot")
@@ -320,7 +348,7 @@ filtered_districts <- reactive({
         fct_rev()
     ) |> 
     add_count(district) |> 
-    select(district, district_polygon, n) |> 
+    select(district, district_polygon, n, m2) |> 
     unique()
   
   if (input$selected_scale == "absolute") {
@@ -343,6 +371,15 @@ filtered_districts <- reactive({
       res |> 
       mutate(
         n = n/max(cumsum(res$n))
+      ) |> 
+      st_as_sf()
+  }
+  
+  if (input$selected_scale == "qkm") {
+    res <- 
+      res |> 
+      mutate(
+        n = round(n/m2 * 10^6)
       ) |> 
       st_as_sf()
   }
@@ -413,7 +450,8 @@ absolutePanel(
     choices = c(
       "Absolut" = "absolute",
       "Normiert" = "norm",
-      "Relativ" = "relative"
+      "Relativ" = "relative",
+      "Pro qkm" = "qkm"
     ), 
     selected = "Absolut"
   )
@@ -469,7 +507,7 @@ Info
 
 Dieses Dashboard visualisiert Unfälle mit Personenschaden, die sich im Stadtgebiet Regensburg zugetragen haben. Die entstammen dem deutschlandweiten Unfallatlas des statistischen Bundesamts (LINK).
 
-Es entstand als Teil meines Abschlussprojekts des Kurses "Daten Visualisieren" der Universität Regensburg. Der Rest des Projektes kann kann unter meiner [persönlichen Website](https://www.kdschneider.github.io/unfaelle-regensburg), bzw. auf [Github](https://www.github.com/kdschneider/unfaelle-regensburg), gefunden werden.
+Es entstand als Teil meines Abschlussprojekts des Kurses "Daten Visualisieren" der Universität Regensburg. Der Rest des Projektes kann kann unter meiner [persönlichen Website](https://kdschneider.github.io/unfaelle-regensburg), bzw. auf [Github](https://github.com/kdschneider/unfaelle-regensburg), gefunden werden.
 
 Daten {data-width=650}
 ----

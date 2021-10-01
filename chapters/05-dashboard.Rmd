@@ -8,4 +8,4 @@ knitr::include_app(
   url = "https://kdschneider.shinyapps.io/unfaelle-regensburg/")
 ```
 
-Eine Liveversion der App kann [hier](https://www.kdschneider.shinyapps.io/unfaelle-regensburg) gefunden werden. 
+Eine Liveversion der App kann [hier](https://kdschneider.shinyapps.io/unfaelle-regensburg) gefunden werden. 

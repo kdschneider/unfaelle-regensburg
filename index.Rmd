@@ -26,10 +26,11 @@ Dieses Datenprjekt entstand als Abschlussprojekt zum Kurs "Daten Visualisieren" 
 ```{r include=FALSE}
 knitr::write_bib(
   x = c(
-    "tidyverse", 
-    "lubridate",
+    "tidyverse",
     "sf",
-    "leaflet"
+    "leaflet",
+    "flexdashboard",
+    "shiny"
   ),
   file = here::here("assets/packages.bib")
 )

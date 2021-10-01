@@ -1,6 +1,13 @@
 fig:unfaelle-timeseries
 fig:unfaelle-jaehrlich
 fig:unfaelle-jaehrlich-typ
+fig:unfaelle-monthly
+fig:unfaelle-time
+fig:unfaelle-district1
+fig:unfaelle-district2
+fig:who1
+fig:who2
+fig:who3
 data
 geocode
 csvrda-speichern.
@@ -19,10 +26,7 @@ finale-karte-1
 total-crashes
 unfälle-nach-monat
 unfälle-nach-uhrzeit
-unfälle-nach-ortsteil
-absolute-anzahl
-pro-quadratkilometer
+wo-finden-die-meisten-unfälle-statt
+welches-ist-das-gefährlichste-verkehrsmittel
 dashboard
 data-table
-cover-image-path-to-the-social-sharing-image-like-imagescover.jpg
-schwere-des-unfalls

@@ -171,7 +171,7 @@ data.barplot <-
     )
 ```
 
-Abbildung \@reg(fig:unfaelle-monthly) zeigt die monatliche Verteilung der dokumentierten Unfälle. Es lässt sich ablesen, dass die Anzahl der Unfälle vom Winter bis Sommer ansteigt und in Juli ein Maximum annimmt. Mit dem Beginn der Sommerferien in Bayern im August sinkt die Anzahlt der Unfälle dann um `r round(1 - nrow(filter(data.barplot, month == "Aug")) / nrow(filter(data.barplot, month == "Jul")), digits = 2) * 100`%.
+Abbildung \@ref(fig:unfaelle-monthly) zeigt die monatliche Verteilung der dokumentierten Unfälle. Es lässt sich ablesen, dass die Anzahl der Unfälle vom Winter bis Sommer ansteigt und in Juli ein Maximum annimmt. Mit dem Beginn der Sommerferien in Bayern im August sinkt die Anzahlt der Unfälle dann um `r round(1 - nrow(filter(data.barplot, month == "Aug")) / nrow(filter(data.barplot, month == "Jul")), digits = 2) * 100`%.
 
 ```{r, fig.height = 6}
 plot.bar.month_1 <- 
@@ -227,7 +227,7 @@ plot.bar.month_3 <-
   )
 ```
 
-```{r unfaelle-monthly, fig.height = 6}
+```{r unfaelle-monthly, fig.height = 6, fig.cap = "Monatiliche Unfälle mit Personenschaden. A) Schwere: Über das Jahr hinweg gibt es kaum relative Unterschiede. B) Lichtverhältnisse: Über die Wintermonate nehmen die Unfälle bei Dunkelheit zu. C) Die Unfälle bei Nässe nehmen von Herbst bis Winter zu. Vom Frühjahr bis Sommer nimmt die Anzahl an Unfällen bei Nässe ab."}
 plot.bar.month_1 / 
   plot.bar.month_2 / 
   plot.bar.month_3 + 
@@ -306,11 +306,11 @@ plot.bar.time_3 <-
   )
 ```
 
-Die meisten Unfälle mit personenschade finden tagsüber statt. Zusätzlich zeigt Abbildung \@ref(fig:unfaelle-time) zwei Peaks: Um sieben Uhr und von 16-17 Uhr. Diese stimmen mit dem Arbeitsverkehr überein.
+Die meisten Unfälle mit Personenschaden finden tagsüber statt. Zusätzlich zeigt Abbildung \@ref(fig:unfaelle-time) zwei Peaks: Um sieben Uhr und von 16-17 Uhr. Diese stimmen mit dem Arbeitsverkehr überein.
 
-Abbildung \@ref(fig:unfaell-time) zeigt auch, dass Unfälle bei Dunkelheit zwischen 16 und 6 Uhr stattfinden. Das ist keine überraschende Erkenntnis, stärkt aber das Vertrauen in die Zuverlässigkeit der Daten.
+Abbildung \@ref(fig:unfaelle-time) zeigt auch, dass Unfälle bei Dunkelheit zwischen 16 und 6 Uhr stattfinden. Das ist keine überraschende Erkenntnis, stärkt aber das Vertrauen in die Zuverlässigkeit der Daten.
 
-```{r unfaelle-time, fig.height = 6}
+```{r unfaelle-time, fig.height = 6, fig.cap = "Unfälle nach Tageszeit."}
 plot.bar.time_1 / 
   plot.bar.time_2 / 
   plot.bar.time_3 +
@@ -397,11 +397,11 @@ plot.district_total_map <-
   )
 ```
 
-Abbildung \@ref(fig:unfaell-district1) zeigt die Anzahl an Unfällen von `r min(data$year)` und `r max(data$year)`. In diesem Zeitraum haben sich die meisten Unfälle in der Regensburger Innenstadt (`r filter(data.district_plot, district == "Innenstadt")$n`) zugetragen.
+Abbildung \@ref(fig:unfaelle-district1) zeigt die Anzahl an Unfällen von `r min(data$year)` und `r max(data$year)`. In diesem Zeitraum haben sich die meisten Unfälle in der Regensburger Innenstadt (`r filter(data.district_plot, district == "Innenstadt")$n`) zugetragen.
 
-Berechnet man die Unfälle pro Quadratkilometer, wird der Unterschied zwischen der Innenstadt und den Umliegenden Stadtteilen noch eindeutiger (siehe Abbildung \@ref(unfaelle-distirct2)).
+Berechnet man die Unfälle pro Quadratkilometer, wird der Unterschied zwischen der Innenstadt und den Umliegenden Stadtteilen noch eindeutiger (siehe Abbildung \@ref(fig:unfaelle-district2)).
 
-```{r unfaelle-district1}
+```{r unfaelle-district1, fig.cap = "Unfälle mit Personenschaden pro Stadtteil (Abolute Zahlen)."}
 plot.district_total_bar + 
   inset_element(
     plot.district_total_map, 
@@ -461,7 +461,7 @@ plot.district_m2_map <-
   )
 ```
 
-```{r unfaelle-district2}
+```{r unfaelle-district2, fig.cap = "Unfälle mit Personenschaden pro Quadratkilometer."}
 plot.district_m2_bar +
   inset_element(
     plot.district_m2_map,
@@ -481,7 +481,7 @@ plot.district_m2_bar +
 
 Betrachtet man die absolute Anzahl der Unfälle mit Personenschaden (siehe Abbildung \@ref(fig:who1)), kommt der Eindruck zustande, dass das Auto das gefährlichste Verkehrsmittel ist. Normiert man die Daten (sieh Abbildung \@ref(fig:who2)), zeigt sich dagegen, dass das Auto relativ sicher ist. So besitzt es das geringste Verhältnis zwischen schweren/tödlichen und leichten Unfällen. 
 
-```{r who1}
+```{r who1, fig.cap = "Unfälle nach Verkehrsteilnehmer."}
 data |> 
   select(severity, bicycle:bike) |> 
   pivot_longer(-severity) |> 
@@ -509,7 +509,7 @@ data |>
   theme(axis.title.x = element_blank())
 ```
 
-```{r who2}
+```{r who2, fig.cap = "Unfälle nach Verkehrsteilnehmer (normiert)."}
 data |> 
   select(severity, bicycle:bike) |> 
   pivot_longer(-severity) |> 
@@ -539,7 +539,7 @@ data |>
 
 In Relation zur Gesamtanzahl der Unfälle mit Personenschaden der einzelnen Verkehrsmittel, sind an den meisten tödlichen Unfällen Motorradfahrer beteiligt (siehe \@ref(fig:who3)).
 
-```{r who3}
+```{r who3, fig.cap = "Anteil der tödlichen Unfälle nach Verkehrsteilnehmer."}
 data |> 
   select(severity, bicycle:bike) |> 
   pivot_longer(-severity) |> 
@@ -565,7 +565,7 @@ data |>
   ggplot() +
   geom_col(aes(x = name, y = n, fill = "severity")) +
   labs(
-    title = "Unfälle nach Verkehrsteilnehmer",
+    title = "Anteil der tödlichen Unfälle",
     subtitle = glue::glue("Regensburg ({min(data$year)} - {max(data$year)})"),
     y = "Anteil an Unfällen"
   ) +
@@ -578,3 +578,5 @@ data |>
     legend.position = "none"
   )
 ```
+
+Trotz der geringeren Gesamtanzahl an Unfällen, ist das Motorrad somit das gefährlichste Verkehrsmittel.

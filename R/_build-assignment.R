@@ -51,7 +51,8 @@ file.copy(
 # purl
 knitr::purl(
   input = here::here("chapters/03-leaflet_map.Rmd"),
-  output = here::here("assignment/aufgabe-a/unfaelle-leaflet.R")
+  output = here::here("assignment/aufgabe-a/unfaelle-leaflet.R"),
+  documentation = 0
 )
 
 # source

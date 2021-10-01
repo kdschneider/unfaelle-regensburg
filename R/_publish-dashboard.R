@@ -25,7 +25,8 @@ file.copy(
 rsconnect::deployApp(
   appDir = here::here("temp"),
   appName = "unfaelle-regensburg",
-  forceUpdate = TRUE
+  forceUpdate = TRUE,
+  launch.browser = FALSE
 )
 
 Sys.sleep(5)
